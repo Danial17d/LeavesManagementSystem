@@ -10,55 +10,31 @@
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
 <header class="flex justify-between items-center p-4 bg-gray-800">
-    <div class="text-4xl font-bold">
+    <div class="text-4xl font-bold text-white">
         LMS
     </div>
-    <div>
-        <ul>
-
-        </ul>
-    </div>
     @auth
-        <div class="relative inline-block">
-            <button
-                id="userMenuButton"
-                type="button"
-                class="w-10 h-10 rounded-full bg-blue-600 hover:bg-blue-700
-               flex items-center justify-center
-               text-white font-semibold focus:outline-none">
-                {{ auth()->user()->getInitialsAttribute() }}
+        <div class="space-x-10">
+            <button id="notificationButton" class="text-white hover:text-gray-300">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"  stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="18" cy="6" r="3" fill="#FF4757" stroke="#fff" stroke-width="1.5"/>
+                </svg>
             </button>
-
-
-            <div
-                id="userMenu"
-                class="hidden absolute right-0 mt-2 w-44 rounded-lg
-               bg-gray-800 shadow-lg ring-1 ring-black/10 z-50"
-            >
-                <a href="/profile" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
-                    Profile
-                </a>
-                <a href="/Dashboard" class="block px-4 py-2 text-sm text-white hover:bg-gray-700">
-                    Dashboard
-                </a>
-
-                <div class="border-t border-gray-700"></div>
-
-                <form method="POST" action="/logout">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
-                    >
-                        Logout
-                    </button>
-                </form>
-            </div>
+            <button id="menuBtn" class="text-white hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="9" y1="3" x2="9" y2="21"/>
+                </svg>
+            </button>
         </div>
-
     @endauth
 </header>
-
+@auth
+    <x-side-bar></x-side-bar>
+    <x-notification-drop-down/>
+@endauth
 
 <main class="flex-grow">
     {{ $slot }}
@@ -86,17 +62,3 @@
 
 </body>
 </html>
-<script>
-    const button = document.getElementById('userMenuButton');
-    const menu = document.getElementById('userMenu');
-
-    button.addEventListener('click', () => {
-        menu.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!button.contains(e.target) && !menu.contains(e.target)) {
-            menu.classList.add('hidden');
-        }
-    });
-</script>
