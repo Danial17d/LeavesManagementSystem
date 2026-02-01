@@ -11,22 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('employees', function (Blueprint $table) {
+        Schema::create('leave_requests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('structure_id')->constrained('structures');
-            $table->decimal('salary', 8, 2)->default(0);
-            $table->integer('balance')->default(21);
-            $table->date('hire_date')->nullable();
+            $table->foreignId('leave_type_id')->constrained('leave_types');
+            $table->date('from');
+            $table->date('to');
+            $table->enum('status', ['pending', 'approved', 'rejected', 'cancelled'])->default('pending')->index();
+            $table->unsignedInteger('current_step')->default(0);
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('leave_requests');
     }
 };

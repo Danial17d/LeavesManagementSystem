@@ -16,16 +16,15 @@ return new class extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('path')->nullable()->index();
+            $table->foreignId('parent_id')->nullable()->index();
+            $table->foreignId('manager_id')->nullable()->index();
             $table->timestamps();
         });
         Schema::table('structures', function (Blueprint $table) {
-            $table->foreignId('parent_id')
-                ->nullable()
-                ->index()
-                ->constrained('structures')
+            $table->foreign('parent_id')
+                ->references('id')->on('structures')
                 ->cascadeOnDelete();
         });
-
     }
 
     /**

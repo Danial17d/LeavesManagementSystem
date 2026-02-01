@@ -1,14 +1,17 @@
-
 <div id="overlay" class="fixed inset-0 bg-opacity-50 z-40 hidden transition-opacity duration-300"></div>
 
 
-<div id="sidebar" class="fixed top-0 right-0 h-full w-80 bg-gray-800 text-white z-50 p-6 transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl">
+<div id="sidebar"
+     class="fixed top-0 right-0 h-full w-80 bg-gray-800 text-white z-50 p-6 transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl">
 
-    <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 transition-colors">&times;</button>
+    <button id="closeBtn" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 transition-colors">
+        &times;
+    </button>
 
 
     <div class="flex flex-col items-center mb-8 pt-8">
-        <div class="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-2xl mb-4">
+        <div
+            class="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-2xl mb-4">
             {{ auth()->user()->getInitialsAttribute() }}
         </div>
         <h3 class="text-xl font-semibold">{{ auth()->user()->name }}</h3>
@@ -29,11 +32,20 @@
                 Dashboard
             </a>
         </li>
-        <li>
-            <a href="/roles" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
-                Roles
-            </a>
-        </li>
+        @can([\App\Enums\PermissionType::RoleList,\App\Enums\PermissionType::StructureList])
+            <li>
+                <a href="/roles" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
+                    Roles
+                </a>
+            </li>
+            <li>
+                <a href="/structures" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
+                    Departments and sections
+                </a>
+            </li>
+        @endcan
+
+
     </ul>
 
     <div class="border-t border-gray-700 my-6"></div>

@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
         ]);
         $user = User::where('name', 'Test User')->first();
         $user->assignRole('admin');
+
+        User::factory()->count(10)->create();
     }
 
 

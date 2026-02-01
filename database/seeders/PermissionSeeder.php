@@ -1,6 +1,6 @@
 <?php
 namespace Database\Seeders;
-use App\Enum\PermissionType;
+use App\Enums\PermissionType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;

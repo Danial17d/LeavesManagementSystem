@@ -7,6 +7,8 @@ use App\Http\Controllers\auth\RegisterController;
 use App\Http\Controllers\auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StructureController;
+use App\Http\Controllers\UserAssignmentController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +40,13 @@ Route::group(['middleware' => 'auth'],function(){
     Route::get('/roles/{role}',[RoleController::class,'show']);
     Route::patch('/roles/{role}',[RoleController::class,'update']);
     Route::delete('/roles/{role}',[RoleController::class,'destroy']);
+
+    Route::get('/structures',[StructureController::class,'index']);
+    Route::get('/structures/{structure}',[StructureController::class,'show']);
+    Route::post('/structures',[StructureController::class,'store']);
+
+    Route::post('/user-assignment',[UserAssignmentController::class,'store']);
+    Route::patch('/user-assignment',[UserAssignmentController::class,'update']);
 
     Route::delete('/logout',[LoginController::class,'destroy'])->name('logout');
 });

@@ -6,7 +6,7 @@
 ])
 
 <div>
-    <label for="{{ $name }}" class="block text-sm text-gray-300 mb-2">
+    <label for="{{ $name }}" class="block text-sm text-gray-300 mb-2 mt-4">
         {{ $label }}
     </label>
 
@@ -17,9 +17,10 @@
         value="{{ old($name, $value) }}"
         {{ $attributes->merge([
             'class' => '
+
                 w-full rounded-lg
                 bg-gray-900 border border-gray-700
-                text-white px-4 py-3
+                text-white px-4 py-3 h-12
                 outline-none
                 focus:ring-2 focus:ring-blue-500
                 focus:ring-offset-2 focus:ring-offset-gray-800
@@ -28,7 +29,7 @@
     >
 
     @error($name)
-    <p class="text-red-400 text-sm mt-2">
+    <p class="text-red-400 text-sm mt-2 mb-2">
         {{ $message }}
     </p>
     @enderror

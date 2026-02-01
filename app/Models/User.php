@@ -23,6 +23,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'structure_id',
     ];
 
     /**
@@ -60,10 +61,14 @@ class User extends Authenticatable implements MustVerifyEmail
             mb_substr($words[count($words) - 1], 0, 1)
         );
     }
-    public function employee(){
-        $this->hasOne(Employee::class);
-    }
     public function notifications(){
         return $this->hasMany(Notification::class);
+    }
+    public function structure()
+    {
+        return $this->belongsTo(Structure::class, 'structure_id');
+    }
+    public function leave(){
+        return $this->hasMany(LeaveRequest::class, 'user_id');
     }
 }
