@@ -2,7 +2,7 @@
      class="hidden top-19 left-5 absolute opacity-0 translate-y-2
             bg-red-600 text-white rounded-lg p-4 mb-4
             transition-all duration-300 ease-in-out">
-    <ul id="error-list" class="list-none pl-5 space-y-1"></ul>
+    <ul id="error-list" class="list-none font-bold space-y-1"></ul>
 </div>
 <script>
     function showError() {

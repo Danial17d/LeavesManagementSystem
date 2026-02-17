@@ -32,15 +32,29 @@
                 Dashboard
             </a>
         </li>
-        @can([\App\Enums\PermissionType::RoleList,\App\Enums\PermissionType::StructureList])
+        @can([\App\Enums\PermissionType::UserList,\App\Enums\PermissionType::StructureList])
             <li>
-                <a href="/roles" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
-                    Roles
+                <a href="/users" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
+                    Employees
                 </a>
             </li>
             <li>
                 <a href="/structures" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
                     Departments and sections
+                </a>
+            </li>
+        @endcan
+        @can(\App\Enums\PermissionType::LeaveTypeList)
+            <li>
+                <a href="{{ route('leave-types.index') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
+                    Leave types
+                </a>
+            </li>
+        @endcan
+        @can(\App\Enums\PermissionType::LeaveRequestList)
+            <li>
+                <a href="{{ route('leave-requests.index') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
+                    Leave Request
                 </a>
             </li>
         @endcan

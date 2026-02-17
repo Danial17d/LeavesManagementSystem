@@ -17,8 +17,10 @@ return new class extends Migration
             $table->foreignId('leave_type_id')->constrained('leave_types');
             $table->date('from');
             $table->date('to');
-            $table->enum('status', ['pending', 'approved', 'rejected', 'cancelled'])->default('pending')->index();
-            $table->unsignedInteger('current_step')->default(0);
+            $table->string('status')->default('pending')->index();
+            $table->text('reason')->nullable();
+            $table->unsignedInteger('current_step')->default(1);
+            $table->string('attachment')->nullable();
             $table->timestamps();
         });
     }

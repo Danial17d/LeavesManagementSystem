@@ -1,4 +1,4 @@
-<x-layout2>
+<x-auth-layout>
     <x-error/>
     <x-status/>
     <div class="max-w-5xl mx-auto px-4 py-16">
@@ -15,7 +15,7 @@
                     hover:-translate-y-1 hover:shadow-lg
                     hover:ring-2 hover:ring-blue-500/40">
 
-            @if((!$hierarchical))
+            @if(!$hierarchical)
                 <button type="button" id="root-node" class="items-center justify-center
                                         px-5 py-2 h-12
                                         bg-blue-600 text-white font-semibold
@@ -29,9 +29,15 @@
             <x-divider/>
 
             <div class="bg-gray-900 p-6">
-                @foreach($hierarchical as $item)
-                    <x-hierarchy-item :item="$item"/>
-                @endforeach
+                @if($hierarchical)
+                    @include('structures.partials.node-card', [
+                        'node' => $hierarchical,
+                        'nodesByParent' => $nodesByParent,
+                        'depth' => 0
+                    ])
+                @else
+                    <p class="text-gray-400">No structure found for your account yet.</p>
+                @endif
             </div>
         </div>
 
@@ -178,4 +184,4 @@
         }
         renderForm();
     </script>
-</x-layout2>
+</x-auth-layout>

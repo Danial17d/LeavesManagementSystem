@@ -1,4 +1,4 @@
-<x-layout2>
+<x-auth-layout>
     <div class="max-w-5xl mx-auto px-4 py-16">
         <div class="bg-gray-800 rounded-lg p-8
                     transition duration-300 ease-in-out
@@ -105,21 +105,20 @@
             <x-table
                 title="Roles"
                 :headers="['ID', 'Name', 'Created At', 'Actions']"
-                :rows="$roles"
-            >
+                :rows="$roles">
                 @foreach ($roles as $role)
                     <tr class="hover:bg-gray-900/40 transition">
                         <td class="px-6 py-4 text-sm text-gray-200">{{ $role->id }}</td>
 
                         <td class="px-6 py-4">
-                            <div class="text-sm font-semibold text-white">{{ $role->name }}</div>
+                            <div class="text-sm font-semibold text-white text-center">{{ $role->name }}</div>
                         </td>
 
-                        <td class="px-6 py-4 text-sm text-gray-300">
+                        <td class="px-6 py-4 text-sm text-gray-300 text-center">
                             {{ \Carbon\Carbon::parse($role->created_at)->format('Y F d') }}
                         </td>
 
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-6 py-4 text-center text-center">
                             <div class="inline-flex items-center gap-2">
                                 <a href="#"
                                    class="px-3 py-1.5 text-sm rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition">
@@ -142,5 +141,5 @@
 
         </div>
         </div>
-</x-layout2>
+</x-auth-layout>
 

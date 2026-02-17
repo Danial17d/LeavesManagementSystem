@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('leave_types', function (Blueprint $table) {
+        Schema::create('leave_type_approval_rules', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->integer('days')->nullable();
+            $table->foreignId('leave_type_id')->constrained('leave_types')->cascadeOnDelete();
+            $table->unsignedBigInteger('level')->default(1);
             $table->timestamps();
+            $table->unique('leave_type_id');
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('leave_types');
+        Schema::dropIfExists('leave_type_approval_rules');
     }
 };

@@ -31,7 +31,7 @@
             <thead class="bg-gray-900/50">
             <tr class="text-left text-sm text-gray-300">
                 @foreach($headers as $header)
-                    <th class="px-6 py-3 font-medium">
+                    <th class="px-6 py-3 font-medium text-center">
                         {{ $header }}
                     </th>
                 @endforeach

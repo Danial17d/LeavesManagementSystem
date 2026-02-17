@@ -1,4 +1,4 @@
-<x-layout1>
+<x-guest-layout>
     <div class="max-w-4xl mx-auto mt-10 mb-10 px-4">
 
         <!-- Hero -->
@@ -82,4 +82,4 @@
         </div>
 
     </div>
-</x-layout1>
+</x-guest-layout>

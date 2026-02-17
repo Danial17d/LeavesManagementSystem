@@ -16,10 +16,11 @@ return new class extends Migration
             $table->foreignId('leave_request_id')->constrained('leave_requests')->cascadeOnDelete();
             $table->foreignId('approver_id')->nullable()->constrained('users')->nullOnDelete();
             $table->unsignedInteger('step')->index();
-            $table->enum('status', ['waiting', 'pending', 'approved', 'rejected'])->default('waiting')->index();
+            $table->string('status')->default('waiting')->index();
             $table->timestamp('acted_at')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
+            $table->unique(['leave_request_id', 'step']);
         });
     }
 

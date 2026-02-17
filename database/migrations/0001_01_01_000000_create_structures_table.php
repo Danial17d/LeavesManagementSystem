@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->string('path')->nullable()->index();
             $table->foreignId('parent_id')->nullable()->index();
             $table->foreignId('manager_id')->nullable()->index();
             $table->timestamps();

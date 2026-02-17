@@ -13,6 +13,8 @@ class LeaveRequest extends Model
         'to',
         'status',
         'current_step',
+        'reason',
+        'attachment',
     ];
     public function leaveType(){
         return $this->belongsTo(LeaveType::class);

@@ -1,4 +1,4 @@
-<x-layout2>
+<x-auth-layout>
     <div class="max-w-4xl mx-auto mt-10 mb-10">
 
         <div class="bg-slate-800 rounded-lg p-8 mb-6">
@@ -82,4 +82,4 @@
             </form>
         </div>
     </div>
-</x-layout2>
+</x-auth-layout>

@@ -29,6 +29,7 @@ enum PermissionType :string
     case RoleCreate = 'role:create';
     case RoleEdit   = 'role:edit';
     case RoleDelete = 'role:delete';
+    case RoleAssign = 'role:assign';
 
 
     /*

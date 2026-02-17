@@ -22,7 +22,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
             'role' => ['nullable', 'string', 'max:80'],
-            'sort' => ['nullable', Rule::in(['name', 'email', 'created_at'])],
+            'sort' => ['nullable', Rule::in(['name', 'email', 'id'])],
             'dir'  => ['nullable', Rule::in(['asc', 'desc'])],
         ]);
 
@@ -37,16 +37,13 @@ class UserController extends Controller
             ->when($validated['role'] ?? null, function ($query, $role) {
                 $query->whereHas('roles', fn ($r) => $r->where('name', $role));
             })
-            ->orderBy($validated['sort'] ?? 'created_at', $validated['dir'] ?? 'desc')
+            ->orderBy($validated['sort'] ?? 'id', $validated['dir'] ?? 'asc')
             ->paginate( 10)
             ->withQueryString();
 
-
-            $roles = Role::select('id', 'name')->orderBy('name')->get();
-
             return view('users.index', [
                 'users' => $users,
-                'roles' => $roles,
+                'roles' => Role::query()->select('id', 'name')->orderBy('name')->get(),
             ]);
 
     }
@@ -69,6 +66,8 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'balance' => ['required', 'integer', 'min:0'],
+            'salary' => ['required', 'numeric', 'min:0'],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['string', 'exists:roles,name'],
         ]);
@@ -77,6 +76,8 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'balance' => $validated['balance'],
+            'salary' => $validated['salary'],
         ]);
 
         $user->syncRoles($validated['roles'] ?? []);
@@ -117,7 +118,6 @@ class UserController extends Controller
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             'roles'  => ['nullable', 'array'],
             'roles.*' => ['string', 'exists:roles,name'],
         ]);
@@ -125,15 +125,25 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
         ];
-        if (isset($validated['password'])) {
-            $data['password'] = Hash::make($validated['password']);
-        }
 
         $user->update($data);
 
         $user->syncRoles($validated['roles'] ?? []);
 
-        return redirect()->back()->with('status', 'User updated successfully.');
+        return redirect()->route('users.index')->with('status', 'User updated successfully.');
+    }
+
+    public function assignRole(Request $request, User $user)
+    {
+        Gate::authorize(PermissionType::UserEdit);
+
+        $validated = $request->validate([
+            'role' => ['required', 'string', 'exists:roles,name'],
+        ]);
+
+        $user->syncRoles([$validated['role']]);
+
+        return redirect()->back()->with('status', 'Role assigned successfully.');
     }
 
     public function destroy(Request $request, User $user)
@@ -141,7 +151,7 @@ class UserController extends Controller
         Gate::authorize(PermissionType::UserDelete);
 
         if ($request->user()->id === $user->id) {
-            return back()->withErrors(['delete' => "You can't delete your own account."]);
+            return back()->withErrors(['error' => "You can't delete your own account."]);
         }
 
         $user->delete();
