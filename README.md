@@ -85,7 +85,7 @@ php artisan migrate --seed
 npm run build
 
 php artisan serve
-
+---
 ## Codebase map
 
 If you're digging into the code, here's where things live:
