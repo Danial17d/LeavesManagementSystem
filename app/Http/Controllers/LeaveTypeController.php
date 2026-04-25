@@ -29,7 +29,7 @@ class LeaveTypeController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('leave-types.index', [
+        return view('leave_types.index', [
             'leaveTypes' => $leaveTypes,
         ]);
     }
@@ -38,7 +38,7 @@ class LeaveTypeController extends Controller
     {
         Gate::authorize(PermissionType::LeaveTypeCreate);
 
-        return view('leave-types.create');
+        return view('leave_types.create');
     }
 
     public function store(Request $request)
@@ -47,7 +47,7 @@ class LeaveTypeController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:leave_types,name'],
-            'days' => ['required', 'integer', 'min:1'],
+            'days' => ['nullable', 'integer', 'min:1'],
             'level' => ['required', 'integer', 'min:1'],
         ]);
 
@@ -67,7 +67,7 @@ class LeaveTypeController extends Controller
     {
         Gate::authorize(PermissionType::LeaveTypeView);
 
-        return view('leave-types.show', [
+        return view('leave_types.show', [
             'leaveType' => $leaveType,
         ]);
     }
@@ -76,7 +76,7 @@ class LeaveTypeController extends Controller
     {
         Gate::authorize(PermissionType::LeaveTypeEdit);
 
-        return view('leave-types.edit', [
+        return view('leave_types.edit', [
             'leaveType' => $leaveType,
         ]);
     }
@@ -87,7 +87,7 @@ class LeaveTypeController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('leave_types', 'name')->ignore($leaveType->id)],
-            'days' => ['required', 'integer', 'min:1'],
+            'days' => ['nullable', 'integer', 'min:1'],
             'level' => ['required', 'integer', 'min:1'],
         ]);
 

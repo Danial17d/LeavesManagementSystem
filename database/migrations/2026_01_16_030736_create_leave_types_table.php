@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->integer('days')->nullable();
+            $table->boolean('deducts_balance')->default(true);
+            $table->string('pay_type')->default('paid');
             $table->timestamps();
         });
     }

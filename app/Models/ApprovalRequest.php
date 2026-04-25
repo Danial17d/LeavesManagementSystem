@@ -8,7 +8,8 @@ class ApprovalRequest extends Model
 {
 
     protected $fillable = [
-        'leave_request_id',
+        'approvable_id',
+        'approvable_type',
         'approver_id',
         'step',
         'status',
@@ -18,8 +19,9 @@ class ApprovalRequest extends Model
     protected $casts = [
         'acted_at' => 'datetime',
     ];
-    public function leaveRequest(){
-        return $this->belongsTo(LeaveRequest::class);
+    public function approvable()
+    {
+        return $this->morphTo();
     }
     public function approver()
     {

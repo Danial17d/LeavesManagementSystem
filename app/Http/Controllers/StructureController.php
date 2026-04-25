@@ -36,7 +36,23 @@ class StructureController extends Controller
         return view('structures.index',[
             'hierarchical' => $hierarchical,
             'nodesByParent' => $nodesByParent,
-            'users' =>   User::select('id', 'name', 'email')->get()
+        ]);
+    }
+    public function create(Request $request)
+    {
+        Gate::authorize(PermissionType::StructureCreate);
+
+        $validated = $request->validate([
+            'parent_id' => ['nullable', 'integer', 'exists:structures,id'],
+        ]);
+
+        return view('structures.create', [
+            'parentId' => $validated['parent_id'] ?? null,
+            'users' => User::select('id', 'name', 'email')
+                ->whereHas('roles', function ($query) {
+                    $query->where('name', '!=', 'employee');
+                })
+                ->get(),
         ]);
     }
     public function show(Structure $structure,Request $request){
@@ -64,10 +80,6 @@ class StructureController extends Controller
         return view('structures.show',[
             'structure' => $structure,
             'employees' => $employees,
-            'users' =>User::select('id', 'name')
-                ->where('id', '!=', auth()->id())
-                ->whereNull('structure_id')
-                ->get()
         ]);
     }
     public function store(Request $request)
@@ -85,7 +97,7 @@ class StructureController extends Controller
 
          Structure::create($attributes);
 
-        return redirect()->back()->with('status', 'Structure created');
+        return redirect()->route('structures.index')->with('status', 'Structure created');
     }
     public function destroy(Structure $structure){
 

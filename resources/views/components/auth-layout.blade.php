@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>LMS</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
@@ -14,14 +15,27 @@
         LMS
     </div>
     @auth
+        @php
+            $hasUnreadNotifications = auth()->user()
+                ->notifications()
+                ->where('read', false)
+                ->exists();
+        @endphp
         <div class="space-x-10">
             <button id="notificationButton" class="text-white hover:text-gray-300">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" fill="" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M13.73 21a2 2 0 0 1-3.46 0"  stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    @if(! \App\Models\Notification::all())
-                        <circle cx="18" cy="6" r="3" fill="#FF4757" stroke="#fff" stroke-width="1.5"/>
-                    @endif
+                    <circle
+                        id="notificationUnreadIndicator"
+                        cx="18"
+                        cy="6"
+                        r="3"
+                        fill="#FF4757"
+                        stroke="#fff"
+                        stroke-width="1.5"
+                        class="{{ $hasUnreadNotifications ? '' : 'hidden' }}"
+                    />
 
                 </svg>
             </button>

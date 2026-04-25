@@ -13,6 +13,7 @@
 
                 <x-input label="Name" name="name" :value="$user->name"/>
                 <x-input label="Email" name="email" type="email" :value="$user->email"/>
+                <x-input label="Salary" name="salary" type="text" :value="$user->payrolls()->basic_salary ?? 0 "/>
                 <div>
                     <p class="block text-sm text-gray-300 mb-2 mt-4">Roles</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">

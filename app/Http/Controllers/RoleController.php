@@ -44,42 +44,84 @@ class RoleController extends Controller
 
         return view('roles.index', [
             'roles' => $roles,
-            'roleName' => Role::all()
-
+            'roleName' => Role::query()->select('name')->orderBy('name')->get(),
         ]);
     }
-    public function create(){
+    public function create()
+    {
+        Gate::authorize(PermissionType::RoleCreate);
 
         return view('roles.create', [
             'permissions' => PermissionType::cases(),
-            'users' => User::query()
-                ->select( 'name')
-                ->doesntHave('roles')
-                ->get(),
+            'users' => User::select('name')->get()
         ]);
-
-
     }
-    public function store(Request $request){
+    public function store(Request $request)
+    {
+        Gate::authorize(PermissionType::RoleCreate);
 
         $validated = $request->validate([
-            'name' => 'required',
-            'permissions' => ['required', 'array'],
-            'user_name' => ['required', 'integer', 'exists:users,name'],
+            'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
+            'permissions' => ['required', 'array', 'min:1'],
+            'permissions.*' => ['string', Rule::exists('permissions', 'name')],
         ]);
-        $role = Role::find($validated['name']);
-        $user = User::find([$validated['user_name']]);
 
-        if(! $role){
-            Role::create([
-                'name' => $validated['name'],
-                'guard_name' => 'web',
-            ]);
-        }
-        $role->givePermissionTo($validated['permissions']);
+        $role = Role::create([
+            'name' => $validated['name'],
+            'guard_name' => 'web',
+        ]);
+        $role->syncPermissions($validated['permissions']);
 
-        $user->assignRole($role);
+        return redirect()->route('roles.index')->with('status', 'Role created successfully.');
+    }
 
-        return redirect('/roles');
+    public function show(Role $role)
+    {
+        Gate::authorize(PermissionType::RoleView);
+
+        $role->load('permissions:id,name', 'users:id,name,email');
+
+        return view('roles.show', [
+            'role' => $role,
+        ]);
+    }
+
+    public function edit(Role $role)
+    {
+        Gate::authorize(PermissionType::RoleEdit);
+
+        $role->load('permissions:id,name');
+
+        return view('roles.edit', [
+            'role' => $role,
+            'permissions' => PermissionType::cases(),
+        ]);
+    }
+
+    public function update(Request $request, Role $role)
+    {
+        Gate::authorize(PermissionType::RoleEdit);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles', 'name')->ignore($role->id)],
+            'permissions' => ['required', 'array', 'min:1'],
+            'permissions.*' => ['string', Rule::exists('permissions', 'name')],
+        ]);
+
+        $role->update([
+            'name' => $validated['name'],
+        ]);
+        $role->syncPermissions($validated['permissions']);
+
+        return redirect()->route('roles.index', $role)->with('status', 'Role updated successfully.');
+    }
+
+    public function destroy(Role $role)
+    {
+        Gate::authorize(PermissionType::RoleDelete);
+
+        $role->delete();
+
+        return redirect()->route('roles.index')->with('status', 'Role deleted successfully.');
     }
 }

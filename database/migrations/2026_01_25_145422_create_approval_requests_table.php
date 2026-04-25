@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('approval_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('leave_request_id')->constrained('leave_requests')->cascadeOnDelete();
             $table->foreignId('approver_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->morphs('approvable');
             $table->unsignedInteger('step')->index();
             $table->string('status')->default('waiting')->index();
             $table->timestamp('acted_at')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
-            $table->unique(['leave_request_id', 'step']);
+            $table->unique(['approvable_id', 'approvable_type', 'step']);
         });
     }
 

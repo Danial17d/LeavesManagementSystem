@@ -8,16 +8,16 @@
             <h1 class="text-3xl font-bold text-white ">Roles</h1>
             <div class="flex justify-between">
                 <p class="text-gray-300  mt-2">List and manage your roles</p>
-                <x-button type="link" href="/roles/create">Create</x-button>
+                <a  class="inline-flex items-center justify-center px-5 py-2 h-12 bg-blue-600 text-white font-semibold rounded-lg transition duration-300 ease-in-out hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-lg"
+                    href="{{route('roles.create')}}">Create</a>
             </div>
 
             <x-divider/>
 
             <h1 class="text-3xl font-bold text-white mb-4 ">Filter</h1>
-            <form method="get" action="/roles">
+            <form method="get" action="{{route('roles.index')}}">
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
 
-                    <!-- Role -->
                     <div class="w-full">
                         <label class="block text-sm font-medium text-gray-300 mb-2">Role</label>
                         <div class="relative">
@@ -120,15 +120,21 @@
 
                         <td class="px-6 py-4 text-center text-center">
                             <div class="inline-flex items-center gap-2">
-                                <a href="#"
+                                <a href="{{ route('roles.show', $role) }}"
+                                   class="px-3 py-1.5 text-sm rounded-lg bg-blue-700 hover:bg-blue-600 text-white transition">
+                                    Show
+                                </a>
+
+                                <a href="{{ route('roles.edit', $role) }}"
                                    class="px-3 py-1.5 text-sm rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition">
                                     Edit
                                 </a>
 
-                                <form method="POST" action="#">
+                                <form method="POST" action="{{ route('roles.destroy', $role) }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
+                                            onclick="return confirm('Delete this role?')"
                                             class="px-3 py-1.5 text-sm rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
                                         Delete
                                     </button>
@@ -142,4 +148,3 @@
         </div>
         </div>
 </x-auth-layout>
-

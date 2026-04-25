@@ -4,7 +4,7 @@ namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ResetPassword;
-use App\Services\UrlServices;
+use App\Services\UrlService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +16,7 @@ class ForgotPasswordController extends Controller
     public function create(){
         return view('auth.email');
     }
-    public function store(Request $request, UrlServices $url){
+    public function store(Request $request, UrlService $url){
         $request->validate([
             'email' => ['required', 'string', 'email', 'max:255'],
 

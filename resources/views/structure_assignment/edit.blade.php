@@ -21,7 +21,7 @@
             <x-table title="Employees in Current Structure" :headers="['ID','Name','Email','Role','Move User']" :rows="$employees">
                 @foreach ($employees as $employee)
                     <tr class="hover:bg-gray-900/40 transition">
-                        <td class="px-6 py-4 text-sm text-gray-200 text-center">{{ $employee->id }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-200 text-center font-mono text-xs">{{ $employee->uuid }}</td>
                         <td class="px-6 py-4 text-sm text-white text-center">{{ $employee->name }}</td>
                         <td class="px-6 py-4 text-sm text-gray-300 text-center">{{ $employee->email }}</td>
                         <td class="px-6 py-4 text-sm text-gray-300 text-center">{{ $employee->roles->pluck('name')->join(', ') ?: 'N/A' }}</td>
@@ -29,7 +29,7 @@
                             <form method="POST" action="{{ route('structure.assignment.update') }}" class="grid grid-cols-1 md:grid-cols-6 gap-2 items-center">
                                 @csrf
                                 @method('PATCH')
-                                <input type="hidden" name="user_id" value="{{ $employee->id }}">
+                                <input type="hidden" name="user_id" value="{{ $employee->uuid }}">
                                 <input type="hidden" name="from_structure_id" value="{{ $structure->id }}">
 
                                 <div class="md:col-span-5">

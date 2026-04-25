@@ -21,11 +21,10 @@
                     Show
                 </a>
 
-                <button type="button"
-                        class="add-child-btn px-3 py-1 bg-green-600 rounded-lg transition duration-300 ease-in-out hover:bg-green-700 hover:-translate-y-0.5 hover:shadow-lg"
-                        data-parent-id="{{ $node->id }}">
+                <a href="{{ route('structures.create', ['parent_id' => $node->id]) }}"
+                        class="px-3 py-1 bg-green-600 rounded-lg transition duration-300 ease-in-out hover:bg-green-700 hover:-translate-y-0.5 hover:shadow-lg inline-flex items-center">
                     Add
-                </button>
+                </a>
 
                 <form action="/structures/{{ $node->id }}" method="POST" class="inline"
                       onsubmit="return confirm('Are you sure you want to delete this structure?')">

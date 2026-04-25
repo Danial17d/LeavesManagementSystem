@@ -3,7 +3,7 @@
 namespace App\Services;
 
 
-class UrlServices
+class UrlService
 {
     public function generate(string $routeName ,array $parameters ,int $minutes = 30):string
     {

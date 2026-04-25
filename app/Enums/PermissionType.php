@@ -56,7 +56,6 @@ enum PermissionType :string
     case LeaveRequestView   = 'leave_request:view';
     case LeaveRequestCreate = 'leave_request:create';
     case LeaveRequestEdit   = 'leave_request:edit';
-    case LeaveRequestCancel = 'leave_request:cancel';
     case LeaveRequestDelete = 'leave_request:delete';
 
 
@@ -65,10 +64,9 @@ enum PermissionType :string
     | Leave Approvals Management
     |--------------------------------------------------------------------------
     */
-    case LeaveApprovalList     = 'leave_approval:list';
-    case LeaveApprovalView     = 'leave_approval:view';
-    case LeaveApprovalApprove  = 'leave_approval:approve';
-    case LeaveApprovalReject   = 'leave_approval:reject';
+    case LeaveApprovalList  = 'leave_approval:list';
+    case LeaveApprovalView = 'leave_approval:view';
+    case LeaveApprovalEdit  = 'leave_approval:update';
 
     /*
     |--------------------------------------------------------------------------
@@ -80,6 +78,23 @@ enum PermissionType :string
     case LeaveTypeCreate = 'leave_type:create';
     case LeaveTypeEdit   = 'leave_type:edit';
     case LeaveTypeDelete = 'leave_type:delete';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Structure Request Management
+    |--------------------------------------------------------------------------
+    */
+    case StructureRequestList   = 'structure_request:list';
+    case StructureRequestView   = 'structure_request:view';
+    case StructureRequestCreate = 'structure_request:create';
+    case StructureRequestEdit   = 'structure_request:edit';
+    case StructureRequestDelete = 'structure_request:delete';
+    /*
+    |--------------------------------------------------------------------------
+    | Calendar Management
+    |--------------------------------------------------------------------------
+    */
+    case CalendarView = 'calendar:view';
 
 
 }

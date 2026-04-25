@@ -4,7 +4,6 @@ namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
@@ -13,7 +12,9 @@ class RegisterController extends Controller
     {
         return view('auth.register');
     }
-    public function store(Request $request){
+
+    public function store(Request $request)
+    {
         $attributes = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -24,10 +25,9 @@ class RegisterController extends Controller
         $user->assignRole('employee');
 
         auth()->login($user);
-        event(new Registered($user));
+
+        $user->sendEmailVerificationNotification();
 
         return redirect()->route('verification.notice');
-
-
     }
 }

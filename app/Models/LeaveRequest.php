@@ -2,8 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\RequestStatus;
+use App\Enums\UserRole;
+use App\Observers\LeaveRequestObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([LeaveRequestObserver::class])]
 class LeaveRequest extends Model
 {
     protected $fillable = [
@@ -11,11 +17,17 @@ class LeaveRequest extends Model
         'leave_type_id',
         'from',
         'to',
+        'requested_days',
         'status',
         'current_step',
         'reason',
         'attachment',
     ];
+
+    protected $casts = [
+        'requested_days' => 'integer',
+    ];
+
     public function leaveType(){
         return $this->belongsTo(LeaveType::class);
     }
@@ -23,12 +35,22 @@ class LeaveRequest extends Model
         return $this->belongsTo(User::class);
     }
     public function approval(){
-        return $this->hasMany(ApprovalRequest::class)->orderBy('step');
+        return $this->morphMany(ApprovalRequest::class, 'approvable')->orderBy('step');
     }
-    public function currentApproval()
+
+    public function deductsFromBalance(): bool
     {
-        return $this->approvals()
-            ->where('status', 'pending')
-            ->first();
+        return $this->leaveType->deductsFromBalance();
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query
+            ->whereIn('status', [
+                RequestStatus::Submitted->value,
+                RequestStatus::Pending->value,
+                RequestStatus::Approved->value,
+            ])
+            ->whereDate('to', '>=', now()->toDateString());
     }
 }

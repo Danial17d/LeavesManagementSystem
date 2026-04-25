@@ -27,9 +27,13 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
         $user = User::where('name', 'Test User')->first();
-        $user->assignRole('admin');
+        $user->assignRole(UserRole::SuperAdmin);
 
         User::factory()->count(10)->create();
+
+        $this->call([
+            LeaveBalanceSeeder::class,
+        ]);
     }
 
 

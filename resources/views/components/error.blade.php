@@ -6,7 +6,7 @@
 </div>
 <script>
     function showError() {
-        const errors = @json($errors->all());
+        const errors = @json(array_merge($errors->all(), session('error') ? [session('error')] : []));
         const errorDiv = document.getElementById('error');
         const errorList = document.getElementById('error-list');
 

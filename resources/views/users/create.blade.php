@@ -14,7 +14,6 @@
                 <x-input label="Email" name="email" type="email" :value="old('email')"/>
                 <x-input label="Password" name="password" type="password"/>
                 <x-input label="Confirm Password" name="password_confirmation" type="password"/>
-                <x-input label="Leave Balance" name="balance" type="number" min="0" :value="21"/>
                 <x-input label="Salary" name="salary" type="number" min="0" step="0.01" :value="0"/>
 
                 <div>

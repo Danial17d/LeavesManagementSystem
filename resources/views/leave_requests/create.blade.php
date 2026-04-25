@@ -9,7 +9,12 @@
                 @csrf
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <x-input label="Employee Name" name="employee_name" value="{{auth()->user()->name}}" disabled/>
-                    <x-input label="Balance" name="balance" type="number" min="0" value="{{auth()->user()->balance}}" disabled />
+                    <x-input label="Balance" name="balance" type="number" min="0" value="" readonly />
+                </div>
+
+                <div id="leave-balances-data"
+                     data-balances='@json($leaveBalances)'
+                     class="hidden">
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -110,8 +115,17 @@
         const startDateInput = document.getElementById('start-date');
         const endDateInput = document.getElementById('end-date');
         const requestedDaysInput = document.getElementById('requested-day');
+        const balanceInput = document.getElementById('balance');
+        const leaveTypeSelect = document.getElementById('leave_type');
         const input = document.querySelector('input[name="attachment"]');
         const fileList = document.getElementById('file-list');
+        const leaveBalance = document.getElementById('leave-balances-data');
+        const balances = JSON.parse(leaveBalance.dataset.balances);
+        updateBalance();
+
+
+
+
 
         if (input && fileList) {
             input.addEventListener('change', function () {
@@ -128,6 +142,12 @@
                     fileList.appendChild(fileName);
                 }
             });
+        }
+        function updateBalance() {
+            const selectedType = leaveTypeSelect.value;
+            balanceInput.value = selectedType && Object.prototype.hasOwnProperty.call(balances, selectedType)
+                ? balances[selectedType]
+                : '';
         }
         function updateRequestedDays() {
             const startValue = startDateInput.value;
@@ -156,6 +176,7 @@
             updateRequestedDays();
         });
 
+        leaveTypeSelect.addEventListener('change', updateBalance);
         endDateInput.addEventListener('change', updateRequestedDays);
     </script>
 </x-auth-layout>

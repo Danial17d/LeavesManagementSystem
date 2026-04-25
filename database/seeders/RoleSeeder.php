@@ -14,15 +14,12 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = [
-            'admin',
-            'employee',
-        ];
+
 
         $this->command->info("╔══ Seeding roles...");
-        foreach ($roles as $role) {
-            $this->command->info("║ Seeding role:".$role);
-            Role::firstOrCreate(['name' => $role
+        foreach (UserRole::cases() as $role) {
+            $this->command->info("║ Seeding role:".$role->value);
+            Role::firstOrCreate(['name' => $role->value
                 ,'guard_name' => 'web']);
         }
         $this->command->info('╚══ Seeding roles... done');

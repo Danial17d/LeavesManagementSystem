@@ -1,4 +1,4 @@
-<x-layout1>
+<x-guest-layout>
     <div class="max-w-5xl mx-auto px-4 py-16">
 
         <div
@@ -83,4 +83,4 @@
         </div>
 
     </div>
-</x-layout1>
+</x-guest-layout>

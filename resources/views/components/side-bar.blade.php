@@ -54,7 +54,21 @@
         @can(\App\Enums\PermissionType::LeaveRequestList)
             <li>
                 <a href="{{ route('leave-requests.index') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
-                    Leave Request
+                    Requests
+                </a>
+            </li>
+        @endcan
+        @can(\App\Enums\PermissionType::LeaveApprovalList)
+            <li>
+                <a href="{{ route('leave-approvals.index') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
+                    Leave Approvals
+                </a>
+            </li>
+        @endcan
+        @can(\App\Enums\PermissionType::CalendarView)
+            <li>
+                <a href="{{ route('calendar.index') }}" class="block px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg">
+                    Calendar
                 </a>
             </li>
         @endcan

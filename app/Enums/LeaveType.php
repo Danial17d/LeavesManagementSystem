@@ -1,5 +1,11 @@
 <?php
-
+//Annual leave   → carried_days matters   (roll over unused days)
+//Sick leave     → carried_days = 0 always (reset every year)
+//Marriage       → carried_days = 0 always (one time, use it or lose it)
+//Maternity      → carried_days = 0 always (event-based, not yearly)
+//Hajj           → carried_days = 0 always (once in a lifetime)
+//Paternity      → carried_days = 0 always
+//Bereavement    → carried_days = 0 always
 namespace App\Enums;
 enum LeaveType: string
 {
@@ -11,9 +17,6 @@ enum LeaveType: string
     case PaternityLeave = 'paternity:leave';
     case HajjLeave = 'hajj:leave';
     case UnpaidLeave = 'unpaid:leave';
-    case StudyLeave = 'study:leave';
-    case ExamLeave = 'exam:leave';
-    case OfficialHoliday = 'official:holiday';
     public function leaveDays(): ?int
     {
         return match ($this) {
@@ -24,10 +27,23 @@ enum LeaveType: string
             self::BereavementLeave => 5,
             self::HajjLeave => 15,
             self::MaternityLeave => 70,
-            self::UnpaidLeave =>  21,
-            self::StudyLeave => 21,
-            self::ExamLeave => 21,
-            self::OfficialHoliday => 21
+            self::UnpaidLeave => null,
+        };
+    }
+
+    public function payType(): string
+    {
+        return match ($this) {
+            self::UnpaidLeave => 'unpaid',
+            default => 'paid',
+        };
+    }
+
+    public function deductsBalance(): bool
+    {
+        return match ($this) {
+            self::UnpaidLeave => false,
+            default => true,
         };
     }
 

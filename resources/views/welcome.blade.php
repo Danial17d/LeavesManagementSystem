@@ -1,7 +1,6 @@
 <x-guest-layout>
+    <x-error/>
     <div class="max-w-4xl mx-auto mt-10 mb-10 px-4">
-
-        <!-- Hero -->
         <div
             class="bg-gray-800 text-white p-6 rounded-lg text-center
                    transition duration-300 ease-in-out
@@ -15,7 +14,6 @@
             </p>
         </div>
 
-        <!-- Features -->
         <div class="bg-gray-800 mt-4 rounded-lg">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
 
@@ -70,10 +68,8 @@
                         Your data is protected with modern security standards.
                     </p>
                 </div>
-
-                <!-- CTA -->
                 <div class="col-span-full p-5 flex justify-center">
-                    <x-button href="/register">
+                    <x-button type="link" href="/register">
                         Get Started
                     </x-button>
                 </div>

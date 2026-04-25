@@ -66,7 +66,6 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'balance' => ['required', 'integer', 'min:0'],
             'salary' => ['required', 'numeric', 'min:0'],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['string', 'exists:roles,name'],
@@ -76,15 +75,17 @@ class UserController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'balance' => $validated['balance'],
-            'salary' => $validated['salary'],
         ]);
+        $user->payrolls()->create([
+            'basic_salary' => $validated['salary'],
+            'year' => now()->year,
+            'month' => now()->month,
+        ]);
+
 
         $user->syncRoles($validated['roles'] ?? []);
 
-        return $request->wantsJson()
-            ? response()->json($user->load('roles:id,name'), 201)
-            : redirect()->route('users.index')->with('status', 'User created successfully.');
+        return redirect()->back()->with('status', 'User created successfully.');
     }
 
     public function show(User $user, Request $request)
@@ -118,6 +119,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'salary' => ['required', 'numeric', 'min:0'],
             'roles'  => ['nullable', 'array'],
             'roles.*' => ['string', 'exists:roles,name'],
         ]);
@@ -127,6 +129,10 @@ class UserController extends Controller
         ];
 
         $user->update($data);
+
+        $user->payrolls()->update([
+            'basic_salary' => $validated['salary'],
+        ]);
 
         $user->syncRoles($validated['roles'] ?? []);
 

@@ -7,16 +7,11 @@
             <h1 class="text-3xl font-bold text-white mb-2">My Profile</h1>
             <p class="text-slate-400 mb-8">Update your personal information and password.</p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                    <p class="text-gray-400 text-sm mb-1">Department</p>
-                    <p class="text-white font-semibold">{{ $user->structure?->name ?? 'Not assigned' }}</p>
-                </div>
-                <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
-                    <p class="text-gray-400 text-sm mb-1">Leave Balance</p>
-                    <p class="text-white font-semibold">{{ $user->balance }}</p>
-                </div>
+            <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
+                <p class="text-gray-400 text-sm mb-1">Department</p>
+                <p class="text-white font-semibold">{{ $user->structure?->name ?? 'Not assigned' }}</p>
             </div>
+
 
             <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
                 @csrf

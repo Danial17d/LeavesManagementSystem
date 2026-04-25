@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -20,12 +22,11 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
+        'uuid',
         'name',
         'email',
         'password',
         'structure_id',
-        'balance',
-        'salary',
     ];
 
     /**
@@ -72,5 +73,49 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function leave(){
         return $this->hasMany(LeaveRequest::class, 'user_id');
+    }
+
+    public function leaveBalances()
+    {
+        return $this->hasMany(LeaveBalance::class);
+    }
+
+    public function payrolls()
+    {
+        return $this->hasMany(PayRoll::class);
+    }
+
+    public function managedStructure()
+    {
+        return $this->hasOne(Structure::class, 'manager_id');
+    }
+
+    public function hasLeaveApprover()
+    {
+
+        if ($this->hasRole('Employee')) {
+            return true;
+        }
+
+
+        $managed = $this->managedStructure;
+        if ($managed) {
+            $structure = $managed->parent;
+            while ($structure) {
+                if ($structure->manager_id && $structure->manager_id !== $this->id) {
+                    return true;
+                }
+                $structure = $structure->parent;
+            }
+        }
+
+        return false;
+    }
+
+    public function isChiefExecutive()
+    {
+        $isInHierarchy = $this->structure !== null || $this->managedStructure !== null;
+
+        return $isInHierarchy && ! $this->hasLeaveApprover();
     }
 }

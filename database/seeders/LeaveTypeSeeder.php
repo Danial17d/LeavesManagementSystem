@@ -19,6 +19,8 @@ class LeaveTypeSeeder extends Seeder
                 'name' => $leaveType->value,
             ], [
                 'days' => $leaveType->leaveDays(),
+                'pay_type' => $leaveType->payType(),
+                'deducts_balance' => $leaveType->deductsBalance(),
             ]);
         }
 

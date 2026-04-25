@@ -1,26 +1,27 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ApprovalRequestController;
 use App\Http\Controllers\auth\ForgotPasswordController;
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\RegisterController;
 use App\Http\Controllers\auth\ResetPasswordController;
+use App\Http\Controllers\auth\VerifyEmailController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LeaveRequestAttachmentController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LeaveTypeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleAssignmentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StructureAssignmentController;
 use App\Http\Controllers\StructureController;
+use App\Http\Controllers\StructureRequestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
-
-//=====================
-//public links
-//=====================
 Route::group([],function(){
    Route::get('/',WelcomeController::class)->name('welcome');
    Route::get('/about',AboutController::class)->name('about');
@@ -37,27 +38,18 @@ Route::group(['middleware' => 'guest'],function(){
 });
 
 Route::group(['middleware' => 'auth'],function(){
-    Route::get('/email/verify', function () {
-        return view('auth.verify-email');
-    })->name('verification.notice');
-
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-
-        return redirect()->route('dashboard')->with('status', 'Email verified successfully.');
-    })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
-
-    Route::post('/email/verification-notification', function () {
-        request()->user()->sendEmailVerificationNotification();
-
-        return back()->with('status', 'Verification link sent.');
-    })->middleware('throttle:6,1')->name('verification.send');
-
     Route::delete('/logout',[LoginController::class,'destroy'])->name('logout');
+    Route::get('/verify-email', [VerifyEmailController::class, 'create'])->name('verification.notice');
+    Route::post('/email/verification-notification', [VerifyEmailController::class, 'store'])->name('verification.send')->middleware('throttle:6,1');
+    Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, 'update'])->name('verification.verify')->middleware('signed');
 });
 
-Route::group(['middleware' => ['auth', 'verified']],function(){
+Route::group(['middleware' => ['auth', 'verified', 'has.structure']],function(){
     Route::get('/dashboard',DashboardController::class)->name('dashboard');
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/{year}/{month}/{day}', [CalendarController::class, 'show'])->name('calendar.show');
+    Route::post('/notifications', [NotificationController::class, 'store'])->name('notifications.read');
+    Route::patch('/notifications/{notification}', [NotificationController::class, 'update'])->name('notifications.update');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
@@ -88,11 +80,13 @@ Route::group(['middleware' => ['auth', 'verified']],function(){
     Route::delete('/leave-types/{leaveType}', [LeaveTypeController::class, 'destroy'])->name('leave-types.destroy');
 
     Route::get('/structures',[StructureController::class,'index'])->name('structures.index');
+    Route::get('/structures/create',[StructureController::class,'create'])->name('structures.create');
     Route::get('/structures/{structure}',[StructureController::class,'show'])->name('structures.show');
     Route::post('/structures',[StructureController::class,'store'])->name('structures.store');
     Route::delete('/structures/{structure}',[StructureController::class,'destroy'])->name('structures.destroy');
 
 
+    Route::get('/structure-assignment/{structure}/create',[StructureAssignmentController::class,'create'])->name('structure.assignment.create');
     Route::post('/structure-assignment',[StructureAssignmentController::class,'store'])->name('structure.assignment.store');
     Route::get('/structure-assignment/{structure}/edit',[StructureAssignmentController::class,'edit'])->name('structure.assignment.edit');
     Route::patch('/structure-assignment',[StructureAssignmentController::class,'update'])->name('structure.assignment.update');
@@ -100,4 +94,19 @@ Route::group(['middleware' => ['auth', 'verified']],function(){
     Route::get('/leave-requests/create', [LeaveRequestController::class, 'create'])->name('leave-requests.create');
     Route::get('/leave-requests', [LeaveRequestController::class, 'index'])->name('leave-requests.index');
     Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
+    Route::get('/leave-requests/{leaveRequest}', [LeaveRequestController::class, 'show'])->name('leave-requests.show');
+    Route::delete('/leave-requests/{leaveRequest}', [LeaveRequestController::class, 'destroy'])->name('leave-requests.cancel');
+    Route::get('/leave-requests/{leaveRequest}/attachment', LeaveRequestAttachmentController::class)->name('leave-requests.attachment');
+
+    Route::get('/leave-approvals', [ApprovalRequestController::class, 'index'])->name('leave-approvals.index');
+    Route::patch('/leave-approvals/{approvalRequest}', [ApprovalRequestController::class, 'update'])->name('leave-approvals.update');
+
+});
+
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::get('/structure-requests/create', [StructureRequestController::class, 'create'])->name('structure-requests.create');
+    Route::get('/structure-requests', [StructureRequestController::class, 'index'])->name('structure-requests.index');
+    Route::get('/structure-requests/{structureRequest}', [StructureRequestController::class, 'show'])->name('structure-requests.show');
+    Route::post('/structure-requests', [StructureRequestController::class, 'store'])->name('structure-requests.store');
+    Route::delete('/structure-requests/{structureRequest}', [StructureRequestController::class, 'destroy'])->name('structure-requests.destroy');
 });
