@@ -85,16 +85,6 @@ php artisan migrate --seed
 npm run build
 
 php artisan serve
-```
-
-The seeder gives you two accounts to log in with straight away:
-
-| Role | Email | Password |
-|---|---|---|
-| Super Admin | admin@example.com | password |
-| Employee | employee@example.com | password |
-
----
 
 ## Codebase map
 
