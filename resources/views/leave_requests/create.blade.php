@@ -4,6 +4,23 @@
             class="bg-gray-800 rounded-lg p-8 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:ring-2 hover:ring-blue-500/40">
             <h1 class="text-3xl font-bold text-white mb-2">Request for a leave</h1>
             <p class="text-slate-400 mb-8">Please complete the form below to submit your leave request for approval.</p>
+            @if($isThereTeamLeaveRequest)
+                <div class="flex items-center gap-3 bg-amber-950 border border-amber-700 border-l-4 border-l-amber-400 px-4 py-3">
+                    <svg class="w-5 h-5 shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 20h20L12 2z" fill="currentColor" opacity="0.2"/>
+                        <path d="M12 2L2 20h20L12 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <line x1="12" y1="9" x2="12" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+                    </svg>
+                    <p class="text-sm text-amber-200 leading-relaxed">
+                        There is a teammate who is on leave right now —
+                        <a href="{{ route('calendar.index') }}" class="text-amber-400 underline font-medium hover:text-amber-300">
+                            check the calendar
+                        </a>
+                    </p>
+                </div>
+            @endif
+
 
             <form class="space-y-4" action="{{route('leave-requests.store')}}" method="POST" enctype="multipart/form-data">
                 @csrf

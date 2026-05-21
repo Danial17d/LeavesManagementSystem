@@ -28,18 +28,24 @@ class IsHasBalance implements ValidationRule
             return;
         }
 
-        $leaveBalance = $user->leaveBalances->firstWhere('leave_type_id', $leaveType->id);
+        if ($leaveType->name === 'unpaid:leave') {
+            return;
+        }
 
-        if (! $leaveType->name === 'unpaid:leave'){
-            if (! $leaveBalance) {
-                $fail("No leave balance found for this leave type.");
-                return;
-            }
-            $balance = ($leaveBalance->entitled_day + $leaveBalance->carried_day) - $leaveBalance->used_day;
+        $leaveBalance = $user->leaveBalances()
+            ->where('leave_type_id', $leaveType->id)
+            ->where('year', now()->year)
+            ->first();
 
-            if ((int) $value > (int) $balance ) {
-                $fail("You don't have enough balance to make this request");
-            }
+        if (! $leaveBalance) {
+            $fail("No leave balance found for this leave type.");
+            return;
+        }
+
+        $balance = ($leaveBalance->entitled_days + $leaveBalance->carried_days) - $leaveBalance->used_days;
+
+        if ((int) $value > $balance) {
+            $fail("You don't have enough balance. Available: {$balance} days.");
         }
     }
 }

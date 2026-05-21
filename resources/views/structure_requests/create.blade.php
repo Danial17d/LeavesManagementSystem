@@ -17,36 +17,42 @@
                     </div>
                 </div>
                 <div>
-                    <label for="type" class="block text-sm text-gray-300 mb-2">Transfer type</label>
-                    <select id="type" name="type"
-                            class="w-full rounded-lg bg-gray-900 border border-gray-700 text-white px-4 py-3 h-12 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 appearance-none">
-                        <option value="" disabled {{ old('type') ? '' : 'selected' }}>Select a structure</option>
-                        <option value="assign">Assign to structure</option>
-                        <option value="move" >move to structure</option>
-                    </select>
+                    <input type="hidden" name="type" value="{{ $isAssign ? 'move' : 'assign' }}">
+                    <x-input name="type_display" label="Transfer Type" value="{{ $isAssign ? 'Move to structure' : 'Assign to structure' }}" disabled/>
                     @error('type')
                     <p class="text-red-400 text-sm mt-2">{{ $message }}</p>
                     @enderror
                 </div>
-
-                <div>
-                    <label for="structure_id" class="block text-sm text-gray-300 mb-2">Transfer To</label>
-                    <select id="structure_id" name="structure_id"
-                            class="w-full rounded-lg bg-gray-900 border border-gray-700 text-white px-4 py-3 h-12 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 appearance-none">
-                        <option value="" disabled {{ old('structure_id') ? '' : 'selected' }}>Select a structure</option>
-                        @foreach ($structures as $structure)
-                            <option value="{{ $structure->id }}" {{ old('structure_id') == $structure->id ? 'selected' : '' }}>
-                                {{ $structure->name }}
-                                @if ($structure->type)
-                                    &mdash; {{ $structure->type }}
-                                @endif
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('structure_id')
+                @if(auth()->user()->hasRole(\App\Enums\UserRole::Employee->value))
+                    <div>
+                        <label for="structure_id" class="block text-sm text-gray-300 mb-2">Transfer To</label>
+                        <select id="structure_id" name="structure_id"
+                                class="w-full rounded-lg bg-gray-900 border border-gray-700 text-white px-4 py-3 h-12 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 appearance-none">
+                            <option value="" disabled {{ old('structure_id') ? '' : 'selected' }}>Select a structure</option>
+                            @foreach ($structures as $structure)
+                                <option value="{{ $structure->id }}" {{ old('structure_id') == $structure->id ? 'selected' : '' }}>
+                                    {{ $structure->name }}
+                                    @if ($structure->type)
+                                        &mdash; {{ $structure->type }}
+                                    @endif
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('structure_id')
                         <p class="text-red-400 text-sm mt-2">{{ $message }}</p>
-                    @enderror
-                </div>
+                        @enderror
+                    </div>
+
+                @endif
+                @if(auth()->user()->hasRole(\App\Enums\UserRole::Admin))
+                    <div>
+                        <input type="hidden" name="structure_id" value="{{ $structure->parent->id ?? '' }}">
+                        <x-input name="transfer_to" label="Transfer To" value="{{ $structure->parent->name ?? 'No Parent' }}" disabled/>
+                        @error('structure_id')
+                        <p class="text-red-400 text-sm mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endif
 
                 <div>
                     <label for="reason" class="block text-sm text-gray-300 mb-2">Reason <span class="text-slate-500">(optional)</span></label>

@@ -78,8 +78,9 @@ class UserController extends Controller
         ]);
         $user->payrolls()->create([
             'basic_salary' => $validated['salary'],
-            'year' => now()->year,
-            'month' => now()->month,
+            'net_salary'   => $validated['salary'],
+            'year'         => now()->year,
+            'month'        => now()->month,
         ]);
 
 
@@ -130,9 +131,10 @@ class UserController extends Controller
 
         $user->update($data);
 
-        $user->payrolls()->update([
-            'basic_salary' => $validated['salary'],
-        ]);
+        $user->payrolls()->updateOrCreate(
+            ['month' => now()->month, 'year' => now()->year],
+            ['basic_salary' => $validated['salary'], 'net_salary' => $validated['salary']]
+        );
 
         $user->syncRoles($validated['roles'] ?? []);
 

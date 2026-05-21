@@ -18,10 +18,9 @@
         </div>
 
         <div class="bg-gray-800 rounded-lg p-8 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:ring-2 hover:ring-blue-500/40">
-            <x-table title="Employees in Current Structure" :headers="['ID','Name','Email','Role','Move User']" :rows="$employees">
+            <x-table title="Employees in Current Structure" :headers="['Name','Email','Role','Move User']" :rows="$employees">
                 @foreach ($employees as $employee)
                     <tr class="hover:bg-gray-900/40 transition">
-                        <td class="px-6 py-4 text-sm text-gray-200 text-center font-mono text-xs">{{ $employee->uuid }}</td>
                         <td class="px-6 py-4 text-sm text-white text-center">{{ $employee->name }}</td>
                         <td class="px-6 py-4 text-sm text-gray-300 text-center">{{ $employee->email }}</td>
                         <td class="px-6 py-4 text-sm text-gray-300 text-center">{{ $employee->roles->pluck('name')->join(', ') ?: 'N/A' }}</td>

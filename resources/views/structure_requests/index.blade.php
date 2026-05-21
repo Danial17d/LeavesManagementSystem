@@ -64,8 +64,8 @@
                         @forelse ($structureRequest->approval as $approval)
                             @php
                                 $badgeClass = $statusClasses[$approval->status] ?? 'bg-slate-600 text-white';
-                                $isCurrent  = $approval->step == $structureRequest->current_step;
-                                $cardClass  = $isCurrent
+                                $isCurrent = $approval->step == $structureRequest->current_step;
+                                $cardClass = $isCurrent
                                     ? 'border-blue-500/60 ring-2 ring-blue-500/20'
                                     : 'border-gray-700';
                             @endphp

@@ -9,7 +9,7 @@
 
             <div class="bg-gray-900 border border-gray-700 rounded-lg p-4">
                 <p class="text-gray-400 text-sm mb-1">Department</p>
-                <p class="text-white font-semibold">{{ $user->structure?->name ?? 'Not assigned' }}</p>
+                <p class="text-white font-semibold">{{ $user->structure?->name ?? $user->managedStructure?->name ?? 'Not assigned' }}</p>
             </div>
 
 

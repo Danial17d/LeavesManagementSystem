@@ -9,7 +9,9 @@ use App\Models\ApprovalRequest;
 use App\Models\LeaveBalance;
 use App\Models\LeaveRequest;
 use App\Models\LeaveType;
+use App\Models\Notification;
 use App\Services\LeaveRequestService;
+use App\Services\PayRollService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -106,14 +108,18 @@ class LeaveRequestController extends Controller
             ->whereHas('approvalRule', function ($query) {$query->whereNotNull('level');})
             ->get();
 
-        $isThereTeamLeaveRequest = LeaveRequest::join('users', 'users.id', '=', 'leave_requests.user_id')
-            ->where('structure_id',auth()->user()->structure->id)->get();
+        $isThereTeamLeaveRequest = LeaveRequest::where('status' ,RequestStatus::Approved )
+        ->whereHas('user', function ($query) {
+            $query->where('structure_id', auth()->user()->structure_id);
+            $query->where('is_return' , false);
 
+        })->exists();
 
         return view('leave_requests.create',[
             'leaveRequest' => $leaveRequest,
             'leaveTypes' =>$leaveTypes,
             'leaveBalances' => $leaveBalances,
+            'isThereTeamLeaveRequest' => $isThereTeamLeaveRequest,
         ]);
     }
     public function store(LeaveRequestStore $request)

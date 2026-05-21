@@ -16,7 +16,7 @@ class EnsureUserAssignedToStructure
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
-        if($user->hasRole('Employee') && !$user->structure){
+        if(!$user->hasRole('Super Admin') && !$user->structure){
             return redirect()->route('structure-requests.create')->with('error', 'You are not assigned to any structure.');
         }
         return $next($request);

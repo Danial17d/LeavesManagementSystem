@@ -42,28 +42,58 @@
             </form>
         </div>
 
+        {{-- Hidden delete forms placed outside the level form to avoid invalid nested forms --}}
+        @foreach ($leaveTypes as $leaveType)
+            <form id="delete-{{ $leaveType->id }}" method="POST" action="{{ route('leave-types.destroy', $leaveType) }}">
+                @csrf
+                @method('DELETE')
+            </form>
+        @endforeach
+
         <div class="bg-gray-800 rounded-lg p-8 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:ring-2 hover:ring-blue-500/40">
-            <x-table title="Leave Types" :headers="['ID', 'Type', 'Days', 'Level', 'Action']" :rows="$leaveTypes">
-                @foreach ($leaveTypes as $leaveType)
-                    <tr class="hover:bg-gray-900/40 transition">
-                        <td class="px-6 py-4 text-sm text-gray-200 text-center">{{ $leaveType->id }}</td>
-                        <td class="px-6 py-4 text-sm text-white text-center">{{ $leaveType->name }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-300 text-center">{{ $leaveType->days }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-300 text-center">{{ $leaveType->approvalRule?->level ?? '-' }}</td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="inline-flex items-center gap-2">
-                                <a href="{{ route('leave-types.show', $leaveType) }}" class="px-3 py-1.5 text-sm rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition">Show</a>
-                                <a href="{{ route('leave-types.edit', $leaveType) }}" class="px-3 py-1.5 text-sm rounded-lg bg-blue-700 hover:bg-blue-600 text-white transition">Edit</a>
-                                <form method="POST" action="{{ route('leave-types.destroy', $leaveType) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" onclick="return confirm('Delete this leave type?')" class="px-3 py-1.5 text-sm rounded-lg bg-red-600 hover:bg-red-700 text-white transition">Delete</button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-            </x-table>
+            <div>
+                <x-button type="submit" form="level">
+                    Set the values
+                </x-button>
+                <p class="text-gray-400 mt-3">Select the level of leaves type and then click on the button to change them</p>
+            </div>
+            <form id="level" action="{{ route('leave-types-level.store') }}" method="post">
+                @csrf
+                <x-table title="Leave Types" :headers="['ID', 'Type', 'Days', 'Level', 'Action']" :rows="$leaveTypes">
+                    @foreach ($leaveTypes as $leaveType)
+                        <tr class="hover:bg-gray-900/40 transition">
+                            <td class="px-6 py-4 text-sm text-gray-200 text-center">{{ $leaveType->id }}</td>
+                            <td class="px-6 py-4 text-sm text-white text-center">{{ $leaveType->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300 text-center">{{ $leaveType->days }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-300 text-center">
+                                @if($leaveType->approvalRule?->level)
+                                    {{ $leaveType->approvalRule->level }}
+                                @else
+                                    <input
+                                        type="number"
+                                        name="levels[{{ $leaveType->id }}]"
+                                        placeholder="Set level"
+                                        class="w-30 rounded border border-gray-600 bg-gray-900 px-2 py-1 text-sm text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    />
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="inline-flex items-center gap-2">
+                                    <a href="{{ route('leave-types.show', $leaveType) }}" class="px-3 py-1.5 text-sm rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition">Show</a>
+                                    <a href="{{ route('leave-types.edit', $leaveType) }}" class="px-3 py-1.5 text-sm rounded-lg bg-blue-700 hover:bg-blue-600 text-white transition">Edit</a>
+                                    <button
+                                        type="submit"
+                                        form="delete-{{ $leaveType->id }}"
+                                        onclick="return confirm('Delete this leave type?')"
+                                        class="px-3 py-1.5 text-sm rounded-lg bg-red-600 hover:bg-red-700 text-white transition">
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </x-table>
+            </form>
         </div>
     </div>
 </x-auth-layout>

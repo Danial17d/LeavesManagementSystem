@@ -53,6 +53,7 @@ class ApprovalRequestController extends Controller
         Gate::authorize(PermissionType::LeaveApprovalEdit);
 
         $validated = $request->validate([
+            'salary' => ['sometimes','numeric'],
             'decision' => ['required', 'in:approved,rejected'],
             'note' => ['nullable', 'string'],
         ]);

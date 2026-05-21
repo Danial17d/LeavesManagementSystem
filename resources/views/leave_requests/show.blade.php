@@ -12,6 +12,8 @@
             'cancelled' => 'bg-gray-500 text-white',
         ];
         $canCancel = in_array($leaveRequest->status, ['pending', 'submitted'], true);
+        $canRevoke = $leaveRequest->status === 'approved'
+            && \Carbon\Carbon::parse($leaveRequest->to)->isFuture();
     @endphp
 
     <div class="max-w-6xl mx-auto px-4 py-16">
@@ -56,6 +58,18 @@
                             </button>
                         </form>
                     @endif
+
+                    @can(\App\Enums\PermissionType::LeaveRequestRevoke)
+                        @if ($canRevoke)
+                            <button
+                                type="button"
+                                onclick="document.getElementById('revoke-modal').classList.remove('hidden')"
+                                class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-orange-600 text-white font-semibold transition hover:bg-orange-700"
+                            >
+                                Revoke Approval
+                            </button>
+                        @endif
+                    @endcan
                 </div>
             </div>
         </div>
@@ -172,4 +186,38 @@
             </div>
         </div>
     </div>
+
+    @can(\App\Enums\PermissionType::LeaveRequestRevoke)
+        @if ($canRevoke)
+            <div id="revoke-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+                <div class="bg-gray-800 rounded-xl p-8 w-full max-w-md ring-2 ring-orange-500/40">
+                    <h2 class="text-xl font-bold text-white mb-2">Revoke Approved Leave</h2>
+                    <p class="text-slate-400 text-sm mb-6">
+                        This will reject the approved leave, refund the balance, and notify the employee.
+                        This action cannot be undone.
+                    </p>
+
+                    <form method="POST" action="{{ route('leave-requests.revoke', $leaveRequest) }}">
+                        @csrf
+                        @method('PATCH')
+                        <div class="flex justify-end gap-3 mt-6">
+                            <button
+                                type="button"
+                                onclick="document.getElementById('revoke-modal').classList.add('hidden')"
+                                class="px-4 py-2 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                class="px-4 py-2 rounded-lg bg-orange-600 text-white font-semibold hover:bg-orange-700 transition"
+                            >
+                                Revoke Approval
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+    @endcan
 </x-auth-layout>

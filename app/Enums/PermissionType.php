@@ -57,6 +57,7 @@ enum PermissionType :string
     case LeaveRequestCreate = 'leave_request:create';
     case LeaveRequestEdit   = 'leave_request:edit';
     case LeaveRequestDelete = 'leave_request:delete';
+    case LeaveRequestRevoke = 'leave_request:revoke';
 
 
     /*
@@ -97,4 +98,5 @@ enum PermissionType :string
     case CalendarView = 'calendar:view';
 
 
+    case PayRollCalculate = 'payroll:calculate';
 }

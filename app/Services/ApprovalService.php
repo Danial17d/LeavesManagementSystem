@@ -6,6 +6,7 @@ use App\Enums\RequestStatus;
 use App\Models\ApprovalRequest;
 use App\Models\LeaveBalance;
 use App\Models\Notification;
+use App\Models\PayRoll;
 
 class ApprovalService
 {
@@ -34,6 +35,15 @@ class ApprovalService
                 'user_id' => $requester->id,
                 'body' => 'Your structure assignment request has been approved.',
                 'read' => false,
+            ]);
+
+            PayRoll::create([
+                'user_id' => $requester->id,
+                'month' =>now()->month,
+                'year' => now()->year,
+                'net_salary' => $validated['salary'],
+                'basic_salary' => $validated['salary'],
+
             ]);
 
             return 'Structure request approved.';
@@ -78,11 +88,11 @@ class ApprovalService
 
                 $leaveRequest->approval()->firstOrCreate(
                     ['step' => $approvalRequest->step + 1],
-                    ['approver_id' => $nextStructure->manager_id, 'status' => 'pending']
+                    ['approver_id' => $nextStructure->manager_id, 'status' => RequestStatus::Pending->value]
                 );
 
                 $leaveRequest->update([
-                    'status' => 'pending',
+                    'status' => RequestStatus::Pending->value,
                     'current_step' => $approvalRequest->step + 1,
                 ]);
                 Notification::create([
@@ -106,6 +116,10 @@ class ApprovalService
                     ->where('year', now()->year)
                     ->first();
 
+                if (! $balance) {
+                    return ['error' => 'No leave balance record found for this employee.'];
+                }
+
                 $remaining = ($balance->entitled_days + $balance->carried_days) - $balance->used_days;
 
                 if ($leaveRequest->requested_days > $remaining) {
@@ -124,12 +138,14 @@ class ApprovalService
             }
 
             $leaveRequest->update([
-                'status'       => 'approved',
+                'status'       => RequestStatus::Approved->value,
                 'current_step' => $approvalRequest->step,
             ]);
 
+            $requester->update(['is_return' => false]);
+
             if (mb_strtolower($leaveRequest->leaveType->pay_type) === 'unpaid') {
-                $this->payRollService->calculateSalary($leaveRequest->user, $leaveRequest->requested_days);
+                $this->payRollService->calculateSalaryForUnpaidLeaves($leaveRequest->user, $leaveRequest->requested_days);
             }
 
             Notification::create([
@@ -149,7 +165,7 @@ class ApprovalService
         ]);
 
         $leaveRequest->update([
-            'status'       => 'rejected',
+            'status'       => RequestStatus::Rejected->value,
             'current_step' => $approvalRequest->step,
         ]);
 

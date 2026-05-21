@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PermissionType;
 use App\Enums\RequestStatus;
+use App\Enums\UserRole;
 use App\Models\Structure;
 use App\Models\StructureRequest;
 use Illuminate\Support\Facades\Gate;
@@ -41,9 +42,24 @@ class StructureRequestController extends Controller
 
         $structures = Structure::whereNot('id', $user->structure_id)->orderBy('name')->get();
 
+        $structure = Structure::with('users')
+            ->where('manager_id', auth()->id())
+            ->whereHas('manager', function ($query) {
+                $query->whereHas('roles', function ($rolesQuery) {
+                    $rolesQuery->where('name', UserRole::Admin);
+                });
+            })
+            ->first();
+
+        $isAssign = $user->structure()->exists();
+
+
         return view('structure_requests.create', [
-            'structures'       => $structures,
+            'structures' => $structures,
+            'structure' => $structure,
+            'isAssign' => $isAssign,
             'currentStructure' => $user->structure,
+
         ]);
     }
 

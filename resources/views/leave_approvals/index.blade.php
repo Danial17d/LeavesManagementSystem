@@ -27,7 +27,10 @@
                 <div class="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
                     <div>
                         <div class="flex flex-wrap items-center gap-3">
-                            <h2 class="text-2xl font-bold text-white">{{ $approvable->user?->name }}</h2>
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-slate-400">Employee</p>
+                                <h2 class="text-2xl font-bold text-white">{{ $approvable->user?->name }}</h2>
+                            </div>
                             <span class="inline-flex items-center rounded-lg px-3 py-1 text-sm font-semibold {{ $statusClasses[$approvalRequest->status] ?? 'bg-slate-600 text-white' }}">
                                 {{ str($approvalRequest->status)->headline() }}
                             </span>
@@ -35,6 +38,10 @@
                                 <span class="inline-flex items-center rounded-lg px-3 py-1 text-sm font-semibold bg-blue-600/20 border border-blue-500/40 text-blue-300">
                                     Structure Request
                                 </span>
+                            @else
+                                <a href="{{ route('leave-requests.show', $approvable) }}" class="inline-flex items-center rounded-lg px-3 py-1 text-sm font-semibold bg-gray-700 border border-gray-600 text-slate-300 hover:bg-gray-600 transition">
+                                    View Request &rarr;
+                                </a>
                             @endif
                         </div>
 

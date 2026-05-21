@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->string('status')->default('In Service');
+            $table->boolean('is_return')->default(true);
             $table->timestamps();
         });
 

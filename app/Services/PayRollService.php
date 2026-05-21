@@ -10,40 +10,80 @@ use Carbon\Carbon;
 
 class PayRollService
 {
-    public function calculateSalary(User $user,int $requestedDay){
+    public function calculateSalaryForUnpaidLeaves(User $user, int $requestedDay)
+    {
+        $workingDay = 26;
 
-        $workingDay  = 26;
+        $payRoll = PayRoll::where('year', now()->year)
+            ->where('month', now()->month)
+            ->where('user_id', $user->id)
+            ->first();
 
-        $payRoll = PayRoll::where('year', Carbon::now()->year)
-        ->where('month', Carbon::now()->month)
-        ->where('user_id' , $user->id)
-        ->first();
+        if (!$payRoll) return;
 
-        $leaveRequest = LeaveRequest::with(['leaveType'])
-            ->where('user_id' , $user->id)
-            ->where('status', RequestStatus::Approved)
-            ->whereHas('leaveType', function($query){
-                $query->where('name','unpaid');
-            })->get();
-        if($payRoll){
+        $dailyRate = $payRoll->basic_salary / $workingDay;
 
+        $totalDeduction = $requestedDay * $dailyRate;
 
-            $dailyRate = $payRoll->basic_salary / $workingDay;
+        $netSalary = $payRoll->basic_salary - $totalDeduction;
 
-            $totalDeduction = $requestedDay * $dailyRate;
-
-            $netSalary = $payRoll->basic_salary  - $totalDeduction;
-
-            $user->payrolls()->update([
-                'month' => now()->month,
-                'year' => now()->year,
-                'basic_salary' => $payRoll->basic_salary ,
+        $user->payrolls()
+            ->where('month', now()->month)
+            ->where('year', now()->year)
+            ->update([
                 'net_salary' => $netSalary,
                 'unpaid_deduction' => $totalDeduction,
                 'status' => RequestStatus::Approved,
                 'finalized_at' => now(),
             ]);
+    }
+
+    public function reverseUnpaidLeaveDeduction(User $user): void
+    {
+        $payroll = PayRoll::where('user_id', $user->id)
+            ->where('year', now()->year)
+            ->where('month', now()->month)
+            ->first();
+
+        if (! $payroll || $payroll->unpaid_deduction <= 0) {
+            return;
         }
 
+        $user->payrolls()
+            ->where('year', now()->year)
+            ->where('month', now()->month)
+            ->update([
+                'net_salary'       => $payroll->basic_salary - ($payroll->absent_deduction ?? 0),
+                'unpaid_deduction' => 0,
+            ]);
+    }
+
+    public function calculateSalaryForAbsentDays(User $user)
+    {
+        $workingDay = 26;
+
+        $payRoll = PayRoll::where('year', now()->year)
+            ->where('month', now()->month)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$payRoll) return;
+
+        if (!$payRoll->absent_days) return;
+
+        $dailyRate = $payRoll->basic_salary / $workingDay;
+
+        $totalDeduction = $payRoll->absent_days * $dailyRate;
+
+        $netSalary = $payRoll->basic_salary - $totalDeduction;
+
+        $user->payrolls()
+            ->where('month', now()->month)
+            ->where('year', now()->year)
+            ->update([
+                'net_salary'       => $netSalary,
+                'unpaid_deduction' => $totalDeduction,
+                'finalized_at'     => now(),
+            ]);
     }
 }

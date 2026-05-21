@@ -13,9 +13,11 @@ class PayRoll extends Model
         'basic_salary',
         'net_salary',
         'unpaid_deduction',
+        'absent_days',
+        'status',
+        'finalized_at',
         'year',
         'month',
-
     ];
     public function user()
     {

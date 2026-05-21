@@ -11,7 +11,9 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaveRequestAttachmentController;
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\LeaveRequestRevocation;
 use App\Http\Controllers\LeaveTypeController;
+use App\Http\Controllers\LeaveTypeLevelController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleAssignmentController;
@@ -20,6 +22,7 @@ use App\Http\Controllers\StructureAssignmentController;
 use App\Http\Controllers\StructureController;
 use App\Http\Controllers\StructureRequestController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 Route::group([],function(){
@@ -46,6 +49,7 @@ Route::group(['middleware' => 'auth'],function(){
 
 Route::group(['middleware' => ['auth', 'verified', 'has.structure']],function(){
     Route::get('/dashboard',DashboardController::class)->name('dashboard');
+    Route::post('/user-status', UserStatusController::class)->name('user-status.update');
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/{year}/{month}/{day}', [CalendarController::class, 'show'])->name('calendar.show');
     Route::post('/notifications', [NotificationController::class, 'store'])->name('notifications.read');
@@ -73,8 +77,7 @@ Route::group(['middleware' => ['auth', 'verified', 'has.structure']],function(){
 
     Route::get('/leave-types', [LeaveTypeController::class, 'index'])->name('leave-types.index');
     Route::get('/leave-types/create', [LeaveTypeController::class, 'create'])->name('leave-types.create');
-    Route::post('/leave-types', [LeaveTypeController::class, 'store'])->name('leave-types.store');
-    Route::get('/leave-types/{leaveType}', [LeaveTypeController::class, 'show'])->name('leave-types.show');
+    Route::post('/leave-types', [LeaveTypeController::class, 'store'])->name('leave-types.store');Route::get('/leave-types/{leaveType}', [LeaveTypeController::class, 'show'])->name('leave-types.show');
     Route::get('/leave-types/{leaveType}/edit', [LeaveTypeController::class, 'edit'])->name('leave-types.edit');
     Route::patch('/leave-types/{leaveType}', [LeaveTypeController::class, 'update'])->name('leave-types.update');
     Route::delete('/leave-types/{leaveType}', [LeaveTypeController::class, 'destroy'])->name('leave-types.destroy');
@@ -96,11 +99,13 @@ Route::group(['middleware' => ['auth', 'verified', 'has.structure']],function(){
     Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
     Route::get('/leave-requests/{leaveRequest}', [LeaveRequestController::class, 'show'])->name('leave-requests.show');
     Route::delete('/leave-requests/{leaveRequest}', [LeaveRequestController::class, 'destroy'])->name('leave-requests.cancel');
+    Route::patch('/leave-requests/{leaveRequest}/revoke', [LeaveRequestRevocation::class, 'update'])->name('leave-requests.revoke');
     Route::get('/leave-requests/{leaveRequest}/attachment', LeaveRequestAttachmentController::class)->name('leave-requests.attachment');
 
     Route::get('/leave-approvals', [ApprovalRequestController::class, 'index'])->name('leave-approvals.index');
     Route::patch('/leave-approvals/{approvalRequest}', [ApprovalRequestController::class, 'update'])->name('leave-approvals.update');
 
+    Route::post('leave-types/level',[LeaveTypeLevelController::class,'store'])->name('leave-types-level.store');
 });
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
@@ -108,5 +113,4 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/structure-requests', [StructureRequestController::class, 'index'])->name('structure-requests.index');
     Route::get('/structure-requests/{structureRequest}', [StructureRequestController::class, 'show'])->name('structure-requests.show');
     Route::post('/structure-requests', [StructureRequestController::class, 'store'])->name('structure-requests.store');
-    Route::delete('/structure-requests/{structureRequest}', [StructureRequestController::class, 'destroy'])->name('structure-requests.destroy');
 });

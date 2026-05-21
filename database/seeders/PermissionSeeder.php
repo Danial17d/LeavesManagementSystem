@@ -21,6 +21,12 @@ class PermissionSeeder extends Seeder
         $rolesWithPermissions = [
             'Super Admin'=> PermissionType::cases(),
             'Admin' => [
+                PermissionType::LeaveRequestView,
+                PermissionType::LeaveRequestList,
+                PermissionType::LeaveRequestCreate,
+                PermissionType::LeaveRequestEdit,
+                PermissionType::LeaveRequestDelete,
+                PermissionType::LeaveRequestRevoke,
                 PermissionType::UserList,
                 PermissionType::UserView,
                 PermissionType::UserCreate,
@@ -37,6 +43,11 @@ class PermissionSeeder extends Seeder
                 PermissionType::LeaveTypeCreate,
                 PermissionType::LeaveTypeEdit,
                 PermissionType::CalendarView,
+                PermissionType::PayRollCalculate,
+                PermissionType::StructureRequestList,
+                PermissionType::StructureRequestView,
+                PermissionType::StructureRequestCreate,
+                PermissionType::StructureRequestEdit,
             ],
             'Employee' => [
                 PermissionType::LeaveRequestList,
@@ -50,6 +61,7 @@ class PermissionSeeder extends Seeder
                 PermissionType::StructureRequestCreate,
                 PermissionType::StructureRequestEdit,
                 PermissionType::StructureRequestDelete,
+                PermissionType::PayRollCalculate
             ],
         ];
 

@@ -75,11 +75,11 @@ class DashboardController extends Controller
                     ->get(),
 
                 'byStatus' => [
-                    RequestStatus::Submitted->value  => LeaveRequest::where('status', RequestStatus::Submitted->value)->count(),
-                    RequestStatus::Pending->value    => LeaveRequest::where('status', RequestStatus::Pending->value)->count(),
-                    RequestStatus::Approved->value   => LeaveRequest::where('status', RequestStatus::Approved->value)->count(),
-                    RequestStatus::Rejected->value   => LeaveRequest::where('status', RequestStatus::Rejected->value)->count(),
-                    RequestStatus::Cancelled->value  => LeaveRequest::where('status', RequestStatus::Cancelled->value)->count(),
+                    RequestStatus::Submitted->value => LeaveRequest::where('status', RequestStatus::Submitted->value)->count(),
+                    RequestStatus::Pending->value  => LeaveRequest::where('status', RequestStatus::Pending->value)->count(),
+                    RequestStatus::Approved->value => LeaveRequest::where('status', RequestStatus::Approved->value)->count(),
+                    RequestStatus::Rejected->value  => LeaveRequest::where('status', RequestStatus::Rejected->value)->count(),
+                    RequestStatus::Cancelled->value => LeaveRequest::where('status', RequestStatus::Cancelled->value)->count(),
                 ],
 
                 'totalRequests' => LeaveRequest::count(),

@@ -18,22 +18,25 @@
             </div>
             <x-divider/>
             <h1 class="text-3xl font-bold text-white mb-2 ">Search</h1>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-                <div class="md:col-span-4 w-full">
-                    <x-input
-                        name="search"
-                        label="Search"
-                        type="text"
-                        placeholder="Employee"
-                        class="w-full"
-                    />
-                </div>
+            <form method="GET" action="{{route('structures.show' , $structure->id)}}">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                    <div class="md:col-span-4 w-full">
+                        <x-input
+                            name="search"
+                            label="Search"
+                            type="text"
+                            placeholder="Employee"
+                            class="w-full"
+                        />
+                    </div>
 
-                <div class="md:col-span-1 w-full">
-                    <x-button class="w-full h-12">
-                        Search
-                    </x-button>
-                </div>
+                    <div class="md:col-span-1 w-full">
+                        <x-button class="w-full h-12">
+                            Search
+                        </x-button>
+                    </div>
+            </form>
+
             </div>
 
 
