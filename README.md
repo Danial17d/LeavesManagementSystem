@@ -85,38 +85,5 @@ php artisan migrate --seed
 npm run build
 
 php artisan serve
-```
-
-The seeder gives you two accounts to log in with straight away:
-
-| Role | Email | Password |
-|---|---|---|
-| Super Admin | admin@example.com | password |
-| Employee | employee@example.com | password |
-
 ---
 
-## Codebase map
-
-If you're digging into the code, here's where things live:
-
-```
-app/
-├── Enums/          # Business rules live here — LeaveType knows its own days, pay type, etc.
-├── Models/         # Eloquent models
-├── Observers/      # Side-effects on model events (chain creation, balance init, notifications)
-├── Services/       # The heavier logic — ApprovalService, LeaveRequestService, PayRollService
-├── Rules/          # Custom validation — IsHasBalance checks the employee actually has days left
-└── Http/
-    ├── Controllers/
-    └── Requests/   # LeaveRequestStore handles the multi-rule validation on submission
-
-resources/views/
-├── leave_requests/      # Submit, list, view a leave request
-├── leave_approvals/     # What managers see when it's their turn to act
-├── structure_requests/  # Department assignment requests
-├── structures/          # The org chart views
-├── users/               # User management
-├── calendar/            # Who's off when
-└── components/          # Shared Blade components
-```
