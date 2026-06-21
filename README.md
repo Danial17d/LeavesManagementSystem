@@ -63,7 +63,7 @@ Each step is a record in the database. The request tracks which step it's curren
 - **Spatie Laravel Permission** for roles and permissions
 - **staudenmeir/laravel-adjacency-list** for the recursive org hierarchy queries
 - **Blade + Tailwind CSS + Vite** on the frontend
-- **SQLite** by default (easy to swap out)
+
 
 ---
 
