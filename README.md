@@ -41,7 +41,7 @@ There are three roles: **Super Admin**, **Admin**, and **Employee**. Permissions
 
 A regular employee can submit leave requests and structure transfer requests, and that's about it. Admins manage users, departments, and leave types. Super admins have full access to everything.
 
-One special case worth knowing: if you're the CEO (i.e. there's no one above you in the org chart), you can't submit a leave request — because there's nobody to approve it.
+One special case worth knowing: if you're the CEO (i.e. there's no one above you in the org chart), you can't submit a leave request , because there's nobody to approve it.
 
 ---
 
@@ -53,7 +53,7 @@ When a request comes in, the system walks up the organizational hierarchy and bu
 Employee → Manager → Division Head → Department Head → CEO
 ```
 
-Each step is a record in the database. The request tracks which step it's currently on. If any approver rejects it, the chain stops. If someone cancels a request that was already approved, the system handles reversing the balance too — as long as it was approved less than 3 days ago.
+Each step is a record in the database. The request tracks which step it's currently on. If any approver rejects it, the chain stops. If someone cancels a request that was already approved, the system handles reversing the balance too , as long as it was approved less than 3 days ago.
 
 ---
 
