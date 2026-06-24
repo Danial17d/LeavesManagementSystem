@@ -68,7 +68,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:col-span-2">
                         <div>
                             <label for="start-date" class="block text-sm text-gray-300 mb-2 mt-1">Start Date</label>
-                            <input id="start-date" name="start_date" type="date" value="{{ old('start_date') }}"
+                            <input id="start-date" name="start_date" type="date" value="{{ old('start_date') }}" min="{{ now()->toDateString() }}"
                                    class="w-full rounded-lg bg-gray-900 border border-gray-700 text-white px-4 py-3 h-12 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800">
                             @error('start_date')
                             <p class="text-red-400 text-sm mt-2 mb-2">
@@ -79,7 +79,7 @@
 
                         <div>
                             <label for="end-date" class="block text-sm text-gray-300 mb-2 mt-1">End Date</label>
-                            <input id="end-date" name="end_date" type="date" value="{{ old('end_date') }}"
+                            <input id="end-date" name="end_date" type="date" value="{{ old('end_date') }}" min="{{ now()->toDateString() }}"
                                    class="w-full rounded-lg bg-gray-900 border border-gray-700 text-white px-4 py-3 h-12 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800">
                             @error('end_date')
                             <p class="text-red-400 text-sm mt-2 mb-2">

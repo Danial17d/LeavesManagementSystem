@@ -11,7 +11,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LeaveRequestAttachmentController;
 use App\Http\Controllers\LeaveRequestController;
-use App\Http\Controllers\LeaveRequestRevocation;
+use App\Http\Controllers\LeaveRequestRevocationController;
 use App\Http\Controllers\LeaveTypeController;
 use App\Http\Controllers\LeaveTypeLevelController;
 use App\Http\Controllers\NotificationController;
@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth', 'verified', 'has.structure']],function(){
     Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave-requests.store');
     Route::get('/leave-requests/{leaveRequest}', [LeaveRequestController::class, 'show'])->name('leave-requests.show');
     Route::delete('/leave-requests/{leaveRequest}', [LeaveRequestController::class, 'destroy'])->name('leave-requests.cancel');
-    Route::patch('/leave-requests/{leaveRequest}/revoke', [LeaveRequestRevocation::class, 'update'])->name('leave-requests.revoke');
+    Route::patch('/leave-requests/{leaveRequest}/revoke', [LeaveRequestRevocationController::class, 'update'])->name('leave-requests.revoke');
     Route::get('/leave-requests/{leaveRequest}/attachment', LeaveRequestAttachmentController::class)->name('leave-requests.attachment');
 
     Route::get('/leave-approvals', [ApprovalRequestController::class, 'index'])->name('leave-approvals.index');
@@ -113,4 +113,5 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/structure-requests', [StructureRequestController::class, 'index'])->name('structure-requests.index');
     Route::get('/structure-requests/{structureRequest}', [StructureRequestController::class, 'show'])->name('structure-requests.show');
     Route::post('/structure-requests', [StructureRequestController::class, 'store'])->name('structure-requests.store');
+    Route::delete('/structure-requests/{structureRequest}', [StructureRequestController::class, 'destroy'])->name('structure-requests.destroy');
 });

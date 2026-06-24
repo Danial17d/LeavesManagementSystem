@@ -83,7 +83,6 @@ class PayRollService
             ->update([
                 'net_salary'       => $netSalary,
                 'unpaid_deduction' => $totalDeduction,
-                'finalized_at'     => now(),
             ]);
     }
 }

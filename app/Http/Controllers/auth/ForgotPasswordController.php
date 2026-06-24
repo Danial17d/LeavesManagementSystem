@@ -24,13 +24,13 @@ class ForgotPasswordController extends Controller
         $token = Hash::make(bin2hex(random_bytes(16)));
         $email = $request->string('email')->toString();
 
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $email],
+            ['token' => $token, 'created_at' => now()],
+        );
 
-        DB::table('password_reset_tokens')->insert([
-            'email' => $email,
-            'token' => $token,
-        ]);
-        Mail::to($email)->queue(
-            new ResetPassword($url->generate('reset.password',['token' => $token, 'email' => $email]))
+        Mail::to($email)->send(
+            new ResetPassword($url->generate('reset.password', ['token' => $token, 'email' => $email]))
         );
         return redirect()->back()->with('status', 'We have sent a link to reset your password.');
 

@@ -191,6 +191,8 @@
 
                                 @php
                                     $isDecided = in_array($approvalRequest->status, ['approved', 'rejected']);
+                                    $rejectionExpired = !$isStructureRequest
+                                        && \Carbon\Carbon::parse($approvable->created_at)->diffInDays(now()) > 3;
                                 @endphp
 
                                 <div class="flex flex-col gap-3">
@@ -208,11 +210,16 @@
                                         type="submit"
                                         name="decision"
                                         value="rejected"
-                                        {{ $isDecided ? 'disabled' : '' }}
+                                        {{ ($isDecided || $rejectionExpired) ? 'disabled' : '' }}
+                                        title="{{ $rejectionExpired ? 'Rejection window has expired (3 days from submission)' : '' }}"
                                         class="inline-flex items-center justify-center px-5 py-3 bg-red-600 text-white font-semibold rounded-lg transition duration-300 ease-in-out hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-red-600"
                                     >
                                         Reject Request
                                     </button>
+
+                                    @if ($rejectionExpired)
+                                        <p class="text-xs text-red-400">Rejection window expired — requests can only be rejected within 3 days of submission.</p>
+                                    @endif
                                 </div>
                             </form>
                         </div>

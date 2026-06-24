@@ -95,7 +95,9 @@ class StructureController extends Controller
             'manager_id.unique' => 'This user is already assigned as a manager for another structure.',
         ]);
 
-         Structure::create($attributes);
+        $structure = Structure::create($attributes);
+
+        User::where('id', $attributes['manager_id'])->update(['structure_id' => $structure->id]);
 
         return redirect()->route('structures.index')->with('status', 'Structure created');
     }

@@ -68,12 +68,12 @@ class LeaveRequestService
             ->values();
 
         if ($leaveRequest->user && $managers->isNotEmpty() && $managers->first()->manager_id === $leaveRequest->user->id) {
-            // dont take the same user as one of the manager that must be send a request
+
             $managers = $managers->slice(1)->values();
         }
 
         if ($levels > 0) {
-            // take the manager based on the level and the reindex them
+
             $managers = $managers->take($levels)->values();
         }
 

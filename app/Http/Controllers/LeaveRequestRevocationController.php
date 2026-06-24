@@ -13,11 +13,17 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-class LeaveRequestRevocation extends Controller
+class LeaveRequestRevocationController extends Controller
 {
     public function update(LeaveRequest $leaveRequest, PayRollService $payRollService)
     {
         Gate::authorize(PermissionType::LeaveRequestRevoke);
+
+        $isSelfRevoke = $leaveRequest->user_id === auth()->id();
+
+        if (! $isSelfRevoke && ! auth()->user()->hasAnyRole(['Admin', 'Super Admin'])) {
+            abort(403);
+        }
 
         if ($leaveRequest->status !== RequestStatus::Approved->value) {
             return redirect()->back()->withErrors(['revoke' => 'Only approved leave requests can be revoked.']);
@@ -44,14 +50,18 @@ class LeaveRequestRevocation extends Controller
 
         $leaveRequest->update(['status' => RequestStatus::Rejected->value]);
 
-        $leaveRequest->user->update(['is_return' => true]);
+        if (Carbon::parse($leaveRequest->from)->isPast()) {
+            $leaveRequest->user->update(['is_return' => true]);
+        }
 
-        Notification::create([
-            'title'   => 'Leave Request Revoked',
-            'user_id' => $leaveRequest->user_id,
-            'body'    => 'Your approved leave request has been revoked by an administrator.',
-            'read'    => false,
-        ]);
+        if (! $isSelfRevoke) {
+            Notification::create([
+                'title' => 'Leave Request Revoked',
+                'user_id' => $leaveRequest->user_id,
+                'body' => 'Your approved leave request has been revoked by an administrator.',
+                'read' => false,
+            ]);
+        }
 
         return redirect()->route('leave-requests.show', $leaveRequest)
             ->with('status', 'Leave request revoked successfully.');

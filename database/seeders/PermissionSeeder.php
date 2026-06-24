@@ -55,6 +55,7 @@ class PermissionSeeder extends Seeder
                 PermissionType::LeaveRequestCreate,
                 PermissionType::LeaveRequestEdit,
                 PermissionType::LeaveRequestDelete,
+                PermissionType::LeaveRequestRevoke,
                 PermissionType::CalendarView,
                 PermissionType::StructureRequestList,
                 PermissionType::StructureRequestView,

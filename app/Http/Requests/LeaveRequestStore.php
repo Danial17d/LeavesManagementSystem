@@ -29,7 +29,7 @@ class LeaveRequestStore extends FormRequest
         return [
             'leave_type' => ['required','exists:leave_types,name'],
             'days_requested' => ['required','integer','min:1',new IsHasBalance()],
-            'start_date' => ['required','date'],
+            'start_date' => ['required','date','after_or_equal:today'],
             'end_date' => ['required','date','after_or_equal:start_date'],
             'reason' => ['nullable','string' , 'max:255'],
             'attachment' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,doc,docx', 'max:5120'],
@@ -45,7 +45,7 @@ class LeaveRequestStore extends FormRequest
 
             $activeLeave = LeaveRequest::where('user_id', $this->user()->id)->active()->first();
 
-            if ($activeLeave) {
+            if ($activeLeave && ! $this->user()->is_return) {
                 $until = Carbon::parse($activeLeave->to)->format('M d, Y');
                 $validator->errors()->add('leave_request', "You already have an active leave request running until {$until}. You cannot submit a new one until it ends.");
             }

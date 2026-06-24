@@ -85,7 +85,7 @@ class LeaveRequestController extends Controller
 
         $activeLeave = LeaveRequest::where('user_id', auth()->id())->active()->first();
 
-        if ($activeLeave) {
+        if ($activeLeave && ! auth()->user()->is_return) {
             $until = \Carbon\Carbon::parse($activeLeave->to)->format('M d, Y');
             return redirect()
                 ->route('leave-requests.index')
@@ -159,8 +159,8 @@ class LeaveRequestController extends Controller
     {
         Gate::authorize(PermissionType::LeaveRequestDelete);
 
-        if ($leaveRequest->status === RequestStatus::Approved) {
-            $daysSinceApproval = Carbon::parse($leaveRequest->updated_at)->diffInDays(now());
+        if ($leaveRequest->status === RequestStatus::Pending->value) {
+            $daysSinceApproval = Carbon::parse($leaveRequest->created_at)->diffInDays(now());
 
             if ($daysSinceApproval >= 3) {
                 return redirect()->back()->with('error', 'Leave request cannot be cancelled because it was approved more than 3 days ago.');

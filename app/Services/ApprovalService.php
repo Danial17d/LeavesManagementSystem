@@ -72,6 +72,13 @@ class ApprovalService
         $leaveRequest = $approvalRequest->approvable;
         $requester = $leaveRequest->user;
 
+        if ($validated['decision'] === 'rejected') {
+            $daysSinceSubmission = \Carbon\Carbon::parse($leaveRequest->created_at)->diffInDays(now());
+            if ($daysSinceSubmission > 3) {
+                return ['error' => 'Rejection window has expired. Leave requests can only be rejected within 3 days of submission.'];
+            }
+        }
+
         if ($validated['decision'] === 'approved') {
             $nextStructure = $this->leaveRequestService
                 ->approvalStructures($leaveRequest)

@@ -10,6 +10,7 @@ use App\Models\StructureRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Psy\Util\Str;
 
 class StructureRequestController extends Controller
 {
@@ -50,6 +51,11 @@ class StructureRequestController extends Controller
                 });
             })
             ->first();
+        $structure = Structure::where('manager_id',$user->id)->first();
+
+        if ($structure){
+            redirect()->route('dashboard');
+        }
 
         $isAssign = $user->structure()->exists();
 
@@ -63,6 +69,24 @@ class StructureRequestController extends Controller
         ]);
     }
 
+    public function destroy(StructureRequest $structureRequest)
+    {
+        Gate::authorize(PermissionType::StructureRequestList);
+
+        if (! in_array($structureRequest->status, [
+            RequestStatus::Submitted->value,
+            RequestStatus::Pending->value,
+        ])) {
+            return redirect()->route('structure-requests.index')
+                ->withErrors(['structure_request' => 'Only pending requests can be cancelled.']);
+        }
+
+        $structureRequest->update(['status' => RequestStatus::Cancelled->value]);
+
+        return redirect()->route('structure-requests.index')
+            ->with('status', 'Structure request cancelled successfully.');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -70,6 +94,15 @@ class StructureRequestController extends Controller
             'type' =>['required', Rule::in(['assign','move'])],
             'reason' => ['nullable', 'string', 'max:1000'],
         ]);
+
+        $user = auth()->user();
+
+        $structure = Structure::where('manager_id',$user->id)->first();
+
+        if ($structure){
+            $user->update(['structure_id' => $structure->id]);
+            redirect()->route('dashboard');
+        }
 
         $hasPending = StructureRequest::where('user_id', auth()->id())
             ->whereNotIn('status', [

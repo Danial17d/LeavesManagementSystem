@@ -2,13 +2,13 @@
 
 namespace App\Enums;
 
-namespace App\Enums;
 enum RequestStatus: string
 {
-    case Submitted = "Submitted";
-    case Approved = "Approved";
-    case Rejected = "Rejected";
-    case Cancelled = "Cancelled";
-    case Pending = "Pending";
+    case Submitted = 'submitted';
+    case Approved  = 'approved';
+    case Revoked   = 'revoked';
+    case Rejected  = 'rejected';
+    case Cancelled = 'cancelled';
+    case Pending   = 'pending';
 }
 

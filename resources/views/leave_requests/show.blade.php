@@ -11,8 +11,8 @@
             'rejected' => 'bg-red-600 text-white',
             'cancelled' => 'bg-gray-500 text-white',
         ];
-        $canCancel = in_array($leaveRequest->status, ['pending', 'submitted'], true);
-        $canRevoke = $leaveRequest->status === 'approved'
+        $canCancel = in_array($leaveRequest->status, [\App\Enums\RequestStatus::Pending->value, \App\Enums\RequestStatus::Submitted->value], true);
+        $canRevoke = $leaveRequest->status === \App\Enums\RequestStatus::Approved->value
             && \Carbon\Carbon::parse($leaveRequest->to)->isFuture();
     @endphp
 
