@@ -3,10 +3,8 @@
 namespace App\Services;
 
 use App\Enums\RequestStatus;
-use App\Models\LeaveRequest;
 use App\Models\PayRoll;
 use App\Models\User;
-use Carbon\Carbon;
 
 class PayRollService
 {
@@ -73,16 +71,16 @@ class PayRollService
 
         $dailyRate = $payRoll->basic_salary / $workingDay;
 
-        $totalDeduction = $payRoll->absent_days * $dailyRate;
+        $absentDeduction = $payRoll->absent_days * $dailyRate;
 
-        $netSalary = $payRoll->basic_salary - $totalDeduction;
+        $netSalary = $payRoll->basic_salary - $absentDeduction - ($payRoll->unpaid_deduction ?? 0);
 
         $user->payrolls()
             ->where('month', now()->month)
             ->where('year', now()->year)
             ->update([
                 'net_salary'       => $netSalary,
-                'unpaid_deduction' => $totalDeduction,
+                'absent_deduction' => $absentDeduction,
             ]);
     }
 }

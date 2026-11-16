@@ -1,4 +1,4 @@
-<x-auth-layout>
+<x-auth-layout title="Manager Approvals">
     <x-error/>
     <x-status/>
 
@@ -13,8 +13,8 @@
 
     <div class="max-w-6xl mx-auto px-4 py-16">
         <div class="bg-gray-800 rounded-lg p-8 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg hover:ring-2 hover:ring-blue-500/40">
-            <h1 class="text-3xl font-bold text-white">Manager Leave Approvals</h1>
-            <p class="text-slate-400 mt-2">Review leave requests assigned to you and record an approval decision.</p>
+            <h1 class="text-3xl font-bold text-white">Manager Approvals</h1>
+            <p class="text-slate-400 mt-2">Review leave and structure requests assigned to you and record an approval decision.</p>
         </div>
 
         @forelse ($approvalRequests as $approvalRequest)

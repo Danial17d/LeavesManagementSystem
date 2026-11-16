@@ -227,7 +227,7 @@
                                                 <p class="text-slate-400 text-xs mt-0.5">
                                                     {{ $req->leaveType?->name }}
                                                     &middot;
-                                                    {{ \Carbon\Carbon::parse($req->from)->format('M d') }}â€“{{ \Carbon\Carbon::parse($req->to)->format('M d, Y') }}
+                                                    {{ \Carbon\Carbon::parse($req->from)->format('M d') }}–{{ \Carbon\Carbon::parse($req->to)->format('M d, Y') }}
                                                 </p>
                                             </div>
                                         </div>
@@ -322,7 +322,7 @@
                                     @if ($ms->parent)
                                         <p class="text-slate-500 text-xs mt-0.5">
                                             <span class="text-slate-400">{{ $ms->parent->name }}</span>
-                                            <span class="mx-1 text-slate-600">â€º</span>
+                                            <span class="mx-1 text-slate-600">›</span>
                                             <span class="text-emerald-400 font-medium">{{ $ms->name }}</span>
                                         </p>
                                     @endif
@@ -420,7 +420,7 @@
                                     @if ($dept->parent)
                                         <p class="text-slate-500 text-xs mt-1">
                                             <span class="text-slate-400">{{ $dept->parent->name }}</span>
-                                            <span class="mx-1 text-slate-600">â€º</span>
+                                            <span class="mx-1 text-slate-600">›</span>
                                             <span class="text-blue-400 font-medium">{{ $dept->name }}</span>
                                         </p>
                                     @else
@@ -474,7 +474,7 @@
                 @endif
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-gray-800 rounded-xl p-6">
-                        <h2 class="text-base font-bold text-white mb-5">Leave Balances â€” {{ now()->year }}</h2>
+                        <h2 class="text-base font-bold text-white mb-5">Leave Balances — {{ now()->year }}</h2>
 
                         @if ($employeeStats['leaveBalances']->isEmpty())
                             <div class="flex flex-col items-center justify-center py-12 text-center">
@@ -552,7 +552,7 @@
                                                 {{ $req->leaveType?->name }}
                                             </p>
                                             <p class="text-slate-400 text-xs mt-0.5">
-                                                {{ \Carbon\Carbon::parse($req->from)->format('M d') }}â€“{{ \Carbon\Carbon::parse($req->to)->format('M d, Y') }}
+                                                {{ \Carbon\Carbon::parse($req->from)->format('M d') }}–{{ \Carbon\Carbon::parse($req->to)->format('M d, Y') }}
                                                 &middot;
                                                 {{ $req->requested_days }} {{ $req->requested_days == 1 ? 'day' : 'days' }}
                                             </p>
@@ -574,7 +574,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h2 class="text-base font-bold text-white">Payroll â€” {{ now()->year }}</h2>
+                            <h2 class="text-base font-bold text-white">Payroll — {{ now()->year }}</h2>
                             <p class="text-slate-500 text-xs mt-0.5">Your salary records for this year</p>
                         </div>
                     </div>
@@ -656,7 +656,7 @@
                                             {{ number_format($pr->basic_salary, 2) }}
                                         </td>
                                         <td class="py-3 px-4 text-right tabular-nums {{ $pr->unpaid_deduction > 0 ? 'text-red-400' : 'text-slate-500' }}">
-                                            {{ $pr->unpaid_deduction > 0 ? '-'.number_format($pr->unpaid_deduction, 2) : 'â€”' }}
+                                            {{ $pr->unpaid_deduction > 0 ? '-'.number_format($pr->unpaid_deduction, 2) : '—' }}
                                         </td>
                                         <td class="py-3 px-4 text-right font-semibold text-white tabular-nums">
                                             {{ number_format($pr->net_salary, 2) }}
