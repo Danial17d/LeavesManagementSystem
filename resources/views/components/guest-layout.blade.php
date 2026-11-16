@@ -1,23 +1,29 @@
+@props(['title' => null])
+
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LMS</title>
+    <title>{{ $title ? $title . ' | Leave Management System' : 'Leave Management System' }}</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
 
 <header class="flex justify-between items-center p-4 bg-gray-800">
-    <div class="text-4xl font-bold">
+    <a href="{{ route('welcome') }}" class="text-4xl font-bold hover:text-blue-400 transition">
         LMS
-    </div>
+    </a>
 
     @guest
-        <div>
-            <x-button href="/login" type="link">
+        <div class="flex items-center gap-3">
+            <x-button href="{{ route('login') }}" type="link">
                 Login
+            </x-button>
+            <x-button href="{{ route('register') }}" type="link"
+                      class="bg-transparent! ring-1 ring-blue-500 hover:bg-blue-600!">
+                Register
             </x-button>
         </div>
     @endguest
@@ -32,7 +38,8 @@
                text-white font-semibold focus:outline-none">
                 {{ auth()->user()->getInitialsAttribute() }}
             </button>
-        <x-user-menu/>
+            <x-user-menu/>
+        </div>
     @endauth
 </header>
 
@@ -50,12 +57,22 @@
         </div>
 
         <div class="flex gap-6 text-sm">
-            <a href="/about" class="text-gray-400 hover:text-white transition">
+            <a href="{{ route('welcome') }}" class="text-gray-400 hover:text-white transition">
+                Home
+            </a>
+            <a href="{{ route('about') }}" class="text-gray-400 hover:text-white transition">
                 About
             </a>
-            <a href="/register" class="text-gray-400 hover:text-white transition">
-                Get Started
-            </a>
+            @guest
+                <a href="{{ route('register') }}" class="text-gray-400 hover:text-white transition">
+                    Get Started
+                </a>
+            @endguest
+            @auth
+                <a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-white transition">
+                    Dashboard
+                </a>
+            @endauth
         </div>
 
     </div>
